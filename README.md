@@ -1,0 +1,1 @@
+# plugins-woocommerce-gateway-amazon-payments-advanced

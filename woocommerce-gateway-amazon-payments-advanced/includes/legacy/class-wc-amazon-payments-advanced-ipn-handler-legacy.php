@@ -264,9 +264,7 @@ class WC_Amazon_Payments_Advanced_IPN_Handler_Legacy extends WC_Amazon_Payments_
 					'order_id' => $order_id,
 				)
 			);
-
-			$order->update_meta_data( 'amazon_refund_id', $refund_id );
-			$order->save();
+			add_post_meta( $order_id, 'amazon_refund_id', $refund_id );
 		}
 
 		// Buyer canceled the order.

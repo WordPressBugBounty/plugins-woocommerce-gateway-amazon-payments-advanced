@@ -1,9 +1,9 @@
 === WooCommerce Amazon Pay ===
-Contributors: woocommerce, automattic, saucal, woothemes, akeda, jeffstieler, mikejolley, bor0, claudiosanches, royho, jamesrrodger, laurendavissmith001, dwainm, danreylop
+Contributors: woocommerce, automattic, woothemes, akeda, jeffstieler, mikejolley, bor0, claudiosanches, royho, jamesrrodger, laurendavissmith001, dwainm, danreylop
 Tags: woocommerce, amazon, checkout, payments, e-commerce, ecommerce
-Requires at least: 5.5
-Tested up to: 6.2.2
-Stable tag: 2.5.3
+Requires at least: 4.4
+Tested up to: 5.7
+Stable tag: 2.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -11,23 +11,9 @@ Install the Amazon Pay plugin for your WooCommerce store and take advantage of a
 
 == Description ==
 
-**What is Amazon Pay?** An end-to-end payment solution that gives hundreds of millions of active Amazon customers [1] a familiar, fast, and secure way to complete their purchase through your online store. Shoppers can use the address and payment information already stored in their Amazon account to check out – avoiding account creation or the need to re-enter their billing and shipping information. The performance is continually optimized by technology, learnings, and best practices from Amazon.
+**What is Amazon Pay?** An end-to-end payment solution that gives hundreds of millions of active Amazon customers[1] a familiar, fast, and secure way to complete their purchase through your online store. Shoppers can use the address and payment information already stored in their Amazon account to check out – avoiding account creation or the need to re-enter their billing and shipping information. The performance is continually optimized by technology, learnings, and best practices from Amazon.
 
-As earth’s most customer-centric company, we are continuously innovating on behalf of our customers. With 91% of Amazon Pay customers saying they would use Amazon Pay again and hundreds of millions of active Amazon customers already enabled for Amazon Pay, it can make it easier for you to deliver an improved customer experience online [2].
-
-= The benefits of using Amazon Pay =
-
-**Keep customers engaged – from cart to finish**
-37% percent of customers abandon a site because they’re asked to create an account.[3] With Amazon Pay, there’s no need to create a new account or enter new information on your site.
-
-**Reduce chargebacks and fraudulent transactions**
-The Amazon brand is a proven winner of customer trust.[4] Our advanced fraud protection is the same technology used on Amazon.com
-
-**Grow your audience with co-marketing initiatives**
-The cost of acquiring new customers has increased by over 50% over the last five years.[5] With Amazon Pay co-marketing programs, tap into Amazon’s customer base of 200m+ global Prime customers.
-
-**Leverage the latest technology that customers love**
-Benefit from Amazon’s ecommerce innovations, enable features like recurring payments, let customers shop with their voice using Alexa, and much more.
+As earth’s most customer-centric company, we are continuously innovating on behalf of our customers. With 91% of Amazon Pay customers saying they would use Amazon Pay again and hundreds of millions of active Amazon customers already enabled for Amazon Pay, it can make it easier for you to deliver an improved customer experience online[2].
 
 = Key Features =
 
@@ -35,33 +21,21 @@ Benefit from Amazon’s ecommerce innovations, enable features like recurring pa
 - **Multi-currency**: Maintain the local currency experience across the shopping journey and help customers avoid currency conversion fees from their credit card issuer or bank.
 - **Recurring payment support for [WooCommerce Subscriptions](https://woocommerce.com/products/woocommerce-subscriptions/)** (separate purchase): available for USA, UK, Germany, France, Italy, Ireland, Spain, Luxembourg, Austria, Belgium, Cyprus, Netherlands, Sweden, Portugal, Hungary, Denmark and Japan.
 - **Automatic Decline Handling**: Reduce lost sales with a consistent experience for customers to gracefully recover from a declined payment.
-- **Payment Protection Policy**: Protection against fraud-related chargebacks[6].
-- **Amazon Pay A-to-z Guarantee**: Increase customer confidence to complete purchase in your online store with extra assurance on the timeliness of delivery and order quality[7] .
-- **Delivery Notifications**: Proactively alert customers on the arrival status of physical goods orders via Amazon Alexa[8].
+- **Payment Protection Policy**: Protection against fraud-related chargebacks[3].
+- **Amazon Pay A-to-z Guarantee**: Increase customer confidence to complete purchase in your online store with extra assurance on the timeliness of delivery and order quality[4].
 
 = Definitions =
 
 - [1] Represents active Amazon customer accounts, 2020.
 - [2] Consumer Net Promoter Score (NPS) Surveys: Conducted by Amazon Pay in 2019 among US, UK, DE, FR, IT, and ES consumers who had used Amazon Pay in the 12 months preceding to the survey launch dates.
-- [3] Data from Mobile Checkout Optimization Report, by the Baymard Institute, 2020, commissioned by Amazon Pay.
-- [4] Axios Harris Poll 100, Corporate Reputation Rankings, July 2020.
-- [5] Profitwell, 2020
-- [6] Available for qualified physical goods purchases only.
-- [7] For eligible transactions detailed on the [Amazon Pay Customer Agreement](https://pay.amazon.com/help/201212430).
-- [8] Not available for Royal Mail in the UK.
-
-= How to enable Amazon Pay on WooCommerce =
-
-It only takes a few clicks to enable Amazon Pay on your WooCommerce storefront.
-
-https://www.youtube.com/watch?v=rYoiEjl5Ek8
+- [3] Available for qualified physical goods purchases only.
+- [4] For eligible transactions detailed on the [Amazon Pay Customer Agreement](https://pay.amazon.com/help/201212430).
 
 == Installation ==
 
 = Minimum Requirements =
 
-* WordPress 5.5 or greater
-* WooCommerce 4.0 or greater
+* WordPress 4.4 or greater
 
 = Automatic installation =
 
@@ -79,105 +53,6 @@ WordPress codex contains [instructions on how to do this here](http://codex.word
 Automatic updates should work like a charm; as always though, ensure you backup your site just in case.
 
 == Changelog ==
-
-= 2.5.3 - 2024-09-24 =
-
-* Fix - Add onboarding text and link
-* Fix - Update the plugin Author on wp.org
-* Fix - Set Merchant account details selector as toggle
-* Fix - Adjust the feedback prompt trigger moment
-* Fix - Adjust the plugin description on the WC settings page
-* Fix - Check the configuration link removed from actual page
-* Dev - Bumped tested up to WordPress v6.6.2.
-* Dev - Bumped tested up to WooCommerce v9.3.2.
-
-= 2.5.2 - 2024-07-25 =
-
-* Fix - Error when using a non Standard decimal amount for a currency.
-* Fix - chargeAmount.Amount is invalid when changing currency after selecting other shipping address.
-* Fix - Hide the -OR- on Minicart when selecting "Enable hide button mode".
-* Fix - Change Payment Method for a Subscription Paid with another Payment Method.
-* Fix - Express Checkout on Product page not getting the values of the variations created by WooCommerce Product Add-Ons and Gravity Forms Product Add-ons
-
-= 2.5.1 - 2023-10-30 =s
-
-* Add - New Amazon Pay Platform related Headers.
-* Add - Extendable Multi-currency compatibility.
-
-= 2.5.0 - 2023-07-20 =
-
-* Add - Plugin review Prompt.
-* Fix - Amazon Pay button is displayed on Product pages even when product is Out Of Stock.
-* Fix - WooCommerce Blocks compatibility.
-* Fix - Limit gateway's frontend settings for blocks
-* Update - PHP 8 compatibility fixes.
-* Update - Update WP and WC tested up to.
-
-= 2.4.1 - 2023-02-15 =
-
-* Fix - Identify if the provided order id refers to an actual order completed through Amazon Pay.
-
-= 2.4.0 - 2023-01-26 =
-
-* Update - Bumped required WordPress and WooCommerce versions.
-* Fix - Address street missing in billing address (Germany addresses).
-* Fix - Activate alexa delivery notifications request format.
-* Fix - Allowed currencies population is not taking into account status of compatible multi currency plugin.
-* Fix - Cancelled authorizations should mark order as "Pending payment".
-* Fix - Compatibility with WooCommerce HPOS (custom order tables).
-* Fix - Fatal error when merchant was not migrated to V2 keys.
-
-= 2.3.0 - 2022-10-11 =
-
-* Add - Adds estimatedOrderAmount attribute to Amazon Pay button.
-* Add - Adds support for Amazon Pay on Cart and Checkout Blocks of WooCommerce Blocks.
-* Add - Adds the estimated order amount in every place available by the plugin.
-* Fix - If the currency changes while in the FrontEnd the Gateway will alter its availability based on its settings.
-* Fix - Warning shouldn't appear on Single product regarding the 'subscriptions_enabled' not being set.
-
-= 2.2.4 - 2022-08-12 =
-
-* Fix - Infinite Loop causing Memory Exhaustion.
-
-= 2.2.3 - 2022-08-12 =
-
-* Fix - Pick the proper currency when it gets changed by and external multi-currency plugins.
-* Fix - Addressed possible fatal errors on widgets page and order pay endpoint.
-* Fix - Addressed possible fatal errors when Amazon credentials partially provided.
-
-= 2.2.2 - 2022-06-17 =
-
-* Fix - Require phone number only when purchasing physical products.
-
-= 2.2.1 - 2022-06-13 =
-
-* Fix - Addresses incorrect gateway availability logic.
-
-= 2.2.0 - 2022-05-30 =
-
-* Add - Make Amazon Pay available as a traditional gateway option.
-* Add - Support Alexa Delivery notifications.
-* Add - Support Amazon Pay "Classic" on the checkout block of WooCommerce blocks.
-* Fix - Render Amazon Pay buttons even if they are not visible.
-* Fix - Prevents a JavaScript fatal when rendering Amazon Pay button.
-* Fix - Make Amazon Pay available for supported currencies only.
-* Dev - Bumped tested up to WordPress v6.0.
-
-= 2.1.3 - 2022-04-11 =
-* Fix - Amazon Pay shouldn't be available when not supported currency selected.
-* Dev - Bumped tested up to WordPress 5.9.
-
-= 2.1.2 - 2022-03-17 =
-* Fix - Payment fails when site name is longer than 50 characters.
-* Fix - Payment fails when recurring payment frequency is passed as an integer.
-* Fix - Order changes status to 'Failed' during payment processing.
-* Fix - Error opening subscriptions details due to internal errors.
-* Fix - Multiple pay buttons showing on shipping method change (thank you gyopiazza).
-* Fix - Additional way of identifying order id on return.
-
-= 2.1.1 - 2022-02-03 =
-* Fix - Honoring WooCommerce's setting for decimals when formatting numbers.
-* Fix - Formatting numbers won't separate thousands by ','.
 
 = 2.1.0 - 2022-01-10 =
 * Update - Disable option "Hide standard checkout button on cart page" when other payment gateway are activated.

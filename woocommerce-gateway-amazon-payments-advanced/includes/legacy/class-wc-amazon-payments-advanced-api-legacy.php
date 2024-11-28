@@ -139,7 +139,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 			return false;
 		}
 
-		if ( \PHP_VERSION_ID < 80000 && function_exists( 'libxml_disable_entity_loader' ) ) {
+		if ( function_exists( 'libxml_disable_entity_loader' ) ) {
 			$old = libxml_disable_entity_loader( true );
 		}
 
@@ -471,13 +471,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return string|bool Returns false if failed
 	 */
 	public static function get_reference_state( $order_id, $id ) {
-		$order = wc_get_order( $order_id );
-
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
-		$state = $order->get_meta( 'amazon_reference_state', true, 'edit' );
+		$state = get_post_meta( $order_id, 'amazon_reference_state', true );
 		if ( $state ) {
 			return $state;
 		}
@@ -496,8 +490,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		$state = (string) $response->GetOrderReferenceDetailsResult->OrderReferenceDetails->OrderReferenceStatus->State;
 		// @codingStandardsIgnoreEnd
 
-		$order->update_meta_data( 'amazon_reference_state', $state );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_reference_state', $state );
 
 		return $state;
 	}
@@ -511,12 +504,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return string|bool Returns false if failed.
 	 */
 	public static function get_authorization_state( $order_id, $id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
-		$state = $order->get_meta( 'amazon_authorization_state', true, 'edit' );
+		$state = get_post_meta( $order_id, 'amazon_authorization_state', true );
 		if ( $state ) {
 			return $state;
 		}
@@ -535,8 +523,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		$state = (string) $response->GetAuthorizationDetailsResult->AuthorizationDetails->AuthorizationStatus->State;
 		// @codingStandardsIgnoreEnd
 
-		$order->update_meta_data( 'amazon_authorization_state', $state );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_authorization_state', $state );
 
 		self::update_order_billing_address( $order_id, self::get_billing_address_from_response( $response ) );
 
@@ -552,12 +539,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return string|bool Returns false if failed.
 	 */
 	public static function get_capture_state( $order_id, $id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
-		$state = $order->get_meta( 'amazon_capture_state', true, 'edit' );
+		$state = get_post_meta( $order_id, 'amazon_capture_state', true );
 		if ( $state ) {
 			return $state;
 		}
@@ -576,8 +558,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		$state = (string) $response->GetCaptureDetailsResult->CaptureDetails->CaptureStatus->State;
 		// @codingStandardsIgnoreEnd
 
-		$order->update_meta_data( 'amazon_capture_state', $state );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_capture_state', $state );
 
 		return $state;
 	}
@@ -591,38 +572,32 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return string Reference state.
 	 */
 	public static function get_order_ref_state( $order_id, $state = 'amazon_reference_state' ) {
-		$reference_state = '';
-
-		$order = wc_get_order( $order_id );
-
-		if ( ! ( $order instanceof \WC_order ) ) {
-			return $reference_state;
-		}
+		$ret_state = '';
 
 		switch ( $state ) {
 			case 'amazon_reference_state':
-				$reference_id = $order->get_meta( 'amazon_reference_id', true, 'edit' );
-				if ( $reference_id ) {
-					$reference_state = self::get_reference_state( $order_id, $reference_id );
+				$ref_id = get_post_meta( $order_id, 'amazon_reference_id', true );
+				if ( $ref_id ) {
+					$ret_state = self::get_reference_state( $order_id, $ref_id );
 				}
 				break;
 
 			case 'amazon_authorization_state':
-				$reference_id = $order->get_meta( 'amazon_authorization_id', true, 'edit' );
-				if ( $reference_id ) {
-					$reference_state = self::get_authorization_state( $order_id, $reference_id );
+				$ref_id = get_post_meta( $order_id, 'amazon_authorization_id', true );
+				if ( $ref_id ) {
+					$ret_state = self::get_authorization_state( $order_id, $ref_id );
 				}
 				break;
 
 			case 'amazon_capture_state':
-				$reference_id = $order->get_meta( 'amazon_capture_id', true, 'edit' );
-				if ( $reference_id ) {
-					$reference_state = self::get_capture_state( $order_id, $reference_id );
+				$ref_id = get_post_meta( $order_id, 'amazon_capture_id', true );
+				if ( $ref_id ) {
+					$ret_state = self::get_capture_state( $order_id, $ref_id );
 				}
 				break;
 		}
 
-		return $reference_state;
+		return $ret_state;
 	}
 
 	/**
@@ -644,27 +619,27 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 
 		$order_id = wc_apa_get_order_prop( $order, 'id' );
 
-		$order->update_meta_data( 'amazon_authorization_id', $auth_id );
+		update_post_meta( $order_id, 'amazon_authorization_id', $auth_id );
 
 		$authorization_status = self::get_auth_state_from_reponse( $ipn_payload );
 		switch ( $authorization_status ) {
 			case 'open':
 				// Updating amazon_authorization_state.
-				$order->update_meta_data( 'amazon_authorization_state', 'Open' );
+				update_post_meta( $order_id, 'amazon_authorization_state', 'Open' );
 				// Delete amazon_timed_out_transaction meta.
-				$order->delete_meta_data( 'amazon_timed_out_transaction' );
+				delete_post_meta( $order_id, 'amazon_timed_out_transaction' );
 				/* translators: 1) Auth ID. */
 				$order->add_order_note( sprintf( __( 'Authorized (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), $auth_id ) );
 				$order->add_order_note( __( 'Amazon order opened. Use the "Amazon Pay" box to authorize and/or capture payment. Authorized payments must be captured within 7 days.', 'woocommerce-gateway-amazon-payments-advanced' ) );
 				break;
 			case 'closed':
-				$order->update_meta_data( 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
-				$order->update_meta_data( 'amazon_authorization_state', $authorization_status );
+				update_post_meta( $order_id, 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
+				update_post_meta( $order_id, 'amazon_authorization_state', $authorization_status );
 				/* translators: 1) Auth ID. */
 				$order->add_order_note( sprintf( __( 'Captured (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), str_replace( '-A', '-C', $auth_id ) ) );
 				$order->payment_complete();
 				// Delete amazon_timed_out_transaction meta.
-				$order->delete_meta_data( 'amazon_timed_out_transaction' );
+				delete_post_meta( $order_id, 'amazon_timed_out_transaction' );
 				// Close order reference.
 				self::close_order_reference( $order_id );
 				break;
@@ -672,7 +647,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 				$state_reason_code = self::get_auth_state_reason_code_from_response( $ipn_payload );
 				if ( 'InvalidPaymentMethod' === $state_reason_code ) {
 					// Soft Decline.
-					$order->update_meta_data( 'amazon_authorization_state', 'Suspended' );
+					update_post_meta( $order_id, 'amazon_authorization_state', 'Suspended' );
 					$order->add_order_note( sprintf( __( 'Amazon Order Suspended. Email sent to customer to change its payment method.', 'woocommerce-gateway-amazon-payments-advanced' ), $auth_id ) );
 					$subject = __( 'Please update your payment information', 'woocommerce-gateway-amazon-payments-advanced' );
 					$message = wc_get_template_html( 'emails/legacy/soft-decline.php', array( 'order_id' => $order_id ), '', plugin_dir_path( __DIR__ ) . '/templates/' );
@@ -704,13 +679,11 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 						// Cancel amazon order.
 						self::cancel_order_reference( $order_id );
 					}
+					$order->save();
 				}
 
 				break;
 		}
-
-		$order->save();
-
 		return $authorization_status;
 	}
 
@@ -727,7 +700,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 
 		$order_id = wc_apa_get_order_prop( $order, 'id' );
 
-		$order->update_meta_data( 'amazon_authorization_id', $auth_id );
+		update_post_meta( $order_id, 'amazon_authorization_id', $auth_id );
 
 		$authorization_status = self::get_auth_state_from_reponse( $response );
 		wc_apa()->log( sprintf( 'Found authorization status of %s on pending synchronous payment', $authorization_status ) );
@@ -735,21 +708,21 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		switch ( $authorization_status ) {
 			case 'open':
 				// Updating amazon_authorization_state.
-				$order->update_meta_data( 'amazon_authorization_state', 'Open' );
+				update_post_meta( $order_id, 'amazon_authorization_state', 'Open' );
 				// Delete amazon_timed_out_transaction meta.
-				$order->delete_meta_data( 'amazon_timed_out_transaction' );
+				delete_post_meta( $order_id, 'amazon_timed_out_transaction' );
 				/* translators: 1) Auth ID. */
 				$order->add_order_note( sprintf( __( 'Authorized (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), $auth_id ) );
 				$order->add_order_note( __( 'Amazon order opened. Use the "Amazon Pay" box to authorize and/or capture payment. Authorized payments must be captured within 7 days.', 'woocommerce-gateway-amazon-payments-advanced' ) );
 				break;
 			case 'closed':
-				$order->update_meta_data( 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
-				$order->update_meta_data( 'amazon_authorization_state', $authorization_status );
+				update_post_meta( $order_id, 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
+				update_post_meta( $order_id, 'amazon_authorization_state', $authorization_status );
 				/* translators: 1) Auth ID. */
 				$order->add_order_note( sprintf( __( 'Captured (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), str_replace( '-A', '-C', $auth_id ) ) );
 				$order->payment_complete();
 				// Delete amazon_timed_out_transaction meta.
-				$order->delete_meta_data( 'amazon_timed_out_transaction' );
+				delete_post_meta( $order_id, 'amazon_timed_out_transaction' );
 				// Close order reference.
 				self::close_order_reference( $order_id );
 				break;
@@ -757,7 +730,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 				$state_reason_code = self::get_auth_state_reason_code_from_response( $response );
 				if ( 'InvalidPaymentMethod' === $state_reason_code ) {
 					// Soft Decline.
-					$order->update_meta_data( 'amazon_authorization_state', 'Suspended' );
+					update_post_meta( $order_id, 'amazon_authorization_state', 'Suspended' );
 					$order->add_order_note( sprintf( __( 'Amazon Order Suspended. Email sent to customer to change its payment method.', 'woocommerce-gateway-amazon-payments-advanced' ), $auth_id ) );
 					$subject = __( 'Please update your payment information', 'woocommerce-gateway-amazon-payments-advanced' );
 					$message = wc_get_template_html( 'emails/legacy/soft-decline.php', array( 'order_id' => $order_id ), '', plugin_dir_path( __DIR__ ) . '/templates/' );
@@ -786,6 +759,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 						// Cancel amazon order.
 						self::cancel_order_reference( $order_id );
 					}
+					$order->save();
 				}
 				break;
 			case 'pending':
@@ -800,9 +774,6 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 				}
 				break;
 		}
-
-		$order->save();
-
 		return $authorization_status;
 	}
 
@@ -814,8 +785,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return string
 	 */
 	public static function get_order_language( $order_id ) {
-		$order = wc_get_order( $order_id );
-		return $order instanceof \WC_Order ? $order->get_meta( 'amazon_order_language', true, 'edit' ) : '';
+		return get_post_meta( $order_id, 'amazon_order_language', true );
 	}
 
 	/**
@@ -849,7 +819,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		);
 
 		if ( empty( $args['amazon_reference_id'] ) ) {
-			$args['amazon_reference_id'] = $order->get_meta( 'amazon_reference_id', true, 'edit' );
+			$args['amazon_reference_id'] = get_post_meta( $order_id, 'amazon_reference_id', true );
 		}
 
 		if ( ! $args['amazon_reference_id'] ) {
@@ -1011,10 +981,11 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 			return new WP_Error( 'invalid_order', __( 'Order is not paid via Amazon Pay.', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
 
-		$args = wp_parse_args(
+		$order_id = wc_apa_get_order_prop( $order, 'id' );
+		$args     = wp_parse_args(
 			$args,
 			array(
-				'amazon_reference_id' => $order->get_meta( 'amazon_billing_agreement_id', true, 'edit' ),
+				'amazon_reference_id' => get_post_meta( $order_id, 'amazon_billing_agreement_id', true ),
 				'capture_now'         => false,
 			)
 		);
@@ -1078,10 +1049,6 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	public static function handle_payment_authorization_response( $response, $order, $capture_now, $auth_method = null ) {
 		$order = wc_get_order( $order );
 
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
 		if ( null !== $auth_method ) {
 			_deprecated_function( 'WC_Amazon_Payments_Advanced_API_Legacy::handle_payment_authorization_response', '1.6.0', 'Parameter auth_method is not used anymore' );
 		}
@@ -1116,15 +1083,12 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 
 		$order_id = wc_apa_get_order_prop( $order, 'id' );
 
-		$order->update_meta_data( 'amazon_authorization_id', $auth_id );
+		update_post_meta( $order_id, 'amazon_authorization_id', $auth_id );
 
 		// This is true only on AuthorizeOnBillingAgreement, for the recurring payments.
 		if ( $amazon_reference_id ) {
-			$order->update_meta_data( 'amazon_reference_id', $amazon_reference_id );
+			update_post_meta( $order_id, 'amazon_reference_id', $amazon_reference_id );
 		}
-
-		$order->save();
-
 		self::update_order_billing_address( $order_id, self::get_billing_address_from_response( $response ) );
 
 		$state = self::get_auth_state_from_reponse( $response );
@@ -1136,8 +1100,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		}
 
 		if ( $capture_now ) {
-			$order->update_meta_data( 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
-			$order->save();
+			update_post_meta( $order_id, 'amazon_capture_id', str_replace( '-A', '-C', $auth_id ) );
 
 			/* translators: 1) Auth ID. */
 			$order->add_order_note( sprintf( __( 'Captured (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), str_replace( '-A', '-C', $auth_id ) ) );
@@ -1171,7 +1134,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 			return new WP_Error( 'invalid_order', __( 'Order is not paid via Amazon Pay', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
 
-		$amazon_reference_id = $order->get_meta( 'amazon_reference_id', true, 'edit' );
+		$amazon_reference_id = get_post_meta( $order_id, 'amazon_reference_id', true );
 		if ( ! $amazon_reference_id ) {
 			return new WP_Error( 'order_missing_amazon_reference_id', __( 'Order missing Amazon reference ID', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
@@ -1336,11 +1299,6 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return bool
 	 */
 	public static function update_order_billing_address( $order_id, $address = array() ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
 		// Format address and map to WC fields.
 		$address_lines = array();
 
@@ -1355,33 +1313,31 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		}
 
 		if ( 3 === count( $address_lines ) ) {
-			$order->update_meta_data( '_billing_company', $address_lines[0] );
-			$order->update_meta_data( '_billing_address_1', $address_lines[1] );
-			$order->update_meta_data( '_billing_address_2', $address_lines[2] );
+			update_post_meta( $order_id, '_billing_company', $address_lines[0] );
+			update_post_meta( $order_id, '_billing_address_1', $address_lines[1] );
+			update_post_meta( $order_id, '_billing_address_2', $address_lines[2] );
 		} elseif ( 2 === count( $address_lines ) ) {
-			$order->update_meta_data( '_billing_address_1', $address_lines[0] );
-			$order->update_meta_data( '_billing_address_2', $address_lines[1] );
+			update_post_meta( $order_id, '_billing_address_1', $address_lines[0] );
+			update_post_meta( $order_id, '_billing_address_2', $address_lines[1] );
 		} elseif ( count( $address_lines ) ) {
-			$order->update_meta_data( '_billing_address_1', $address_lines[0] );
+			update_post_meta( $order_id, '_billing_address_1', $address_lines[0] );
 		}
 
 		if ( isset( $address['City'] ) ) {
-			$order->update_meta_data( '_billing_city', $address['City'] );
+			update_post_meta( $order_id, '_billing_city', $address['City'] );
 		}
 
 		if ( isset( $address['PostalCode'] ) ) {
-			$order->update_meta_data( '_billing_postcode', $address['PostalCode'] );
+			update_post_meta( $order_id, '_billing_postcode', $address['PostalCode'] );
 		}
 
 		if ( isset( $address['StateOrRegion'] ) ) {
-			$order->update_meta_data( '_billing_state', $address['StateOrRegion'] );
+			update_post_meta( $order_id, '_billing_state', $address['StateOrRegion'] );
 		}
 
 		if ( isset( $address['CountryCode'] ) ) {
-			$order->update_meta_data( '_billing_country', $address['CountryCode'] );
+			update_post_meta( $order_id, '_billing_country', $address['CountryCode'] );
 		}
-
-		$order->save();
 
 		return true;
 	}
@@ -1397,15 +1353,15 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 */
 	public static function handle_async_ipn_order_reference_payload( $ipn_payload, $order ) {
 		$order                 = is_int( $order ) ? wc_get_order( $order ) : $order;
+		$order_id              = wc_apa_get_order_prop( $order, 'id' );
 		$order_reference_state = (string) $ipn_payload->OrderReference->OrderReferenceStatus->State; // phpcs:ignore WordPress.NamingConventions
 
-		$order->update_meta_data( 'amazon_reference_state', $order_reference_state );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_reference_state', $order_reference_state );
 
 		if ( 'open' === strtolower( $order_reference_state ) ) {
 			// New Async Auth.
 			$order->add_order_note( __( 'Async Authorized attempt.', 'woocommerce-gateway-amazon-payments-advanced' ) );
-			$amazon_reference_id = $order->get_meta( 'amazon_reference_id', true, 'edit' );
+			$amazon_reference_id = get_post_meta( $order_id, 'amazon_reference_id', true );
 			do_action( 'wc_amazon_async_authorize', $order, $amazon_reference_id );
 		}
 	}
@@ -1420,7 +1376,8 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return bool|WP_Error Return true when succeed. Otherwise WP_Error is returned
 	 */
 	public static function close_order_reference( $order ) {
-		$order = wc_get_order( $order );
+		$order    = wc_get_order( $order );
+		$order_id = wc_apa_get_order_prop( $order, 'id' );
 		if ( ! $order ) {
 			return new WP_Error( 'invalid_order', __( 'Invalid order ID', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
@@ -1429,12 +1386,12 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 			return new WP_Error( 'invalid_order', __( 'Order is not paid via Amazon Pay', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
 
-		$amazon_reference_id = $order->get_meta( 'amazon_reference_id', true, 'edit' );
+		$amazon_reference_id = get_post_meta( $order_id, 'amazon_reference_id', true );
 		if ( ! $amazon_reference_id ) {
 			return new WP_Error( 'order_missing_amazon_reference_id', __( 'Order missing Amazon reference ID', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
 
-		$amazon_billing_agreement_id = $order->get_meta( 'amazon_billing_agreement_id', true, 'edit' );
+		$amazon_billing_agreement_id = get_post_meta( $order_id, 'amazon_billing_agreement_id', true );
 		if ( $amazon_billing_agreement_id ) {
 			// If it has a billing agreement Amazon close it on auth, no need to close the order.
 			// https://developer.amazon.com/docs/amazon-pay-api/order-reference-states-and-reason-codes.html .
@@ -1493,8 +1450,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 				$code = isset( $response->Error->Code ) ? (string) $response->Error->Code : 'amazon_error_response';
 				$ret = new WP_Error( $code, (string) $response->Error->Message );
 			} else {
-				$order->delete_meta_data( 'amazon_authorization_id' );
-				$order->save();
+				delete_post_meta( $order_id, 'amazon_authorization_id' );
 
 				$order->add_order_note( sprintf( __( 'Authorization closed (Auth ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), $amazon_authorization_id ) );
 				$ret = true;
@@ -1520,7 +1476,8 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return bool|object|WP_Error
 	 */
 	public static function capture( $order, $args = array() ) {
-		$order = wc_get_order( $order );
+		$order    = wc_get_order( $order );
+		$order_id = wc_apa_get_order_prop( $order, 'id' );
 		if ( ! $order ) {
 			return new WP_Error( 'invalid_order', __( 'Invalid order ID', 'woocommerce-gateway-amazon-payments-advanced' ) );
 		}
@@ -1532,7 +1489,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 		$args = wp_parse_args(
 			$args,
 			array(
-				'amazon_authorization_id' => $order->get_meta( 'amazon_authorization_id', true, 'edit' ),
+				'amazon_authorization_id' => get_post_meta( $order_id, 'amazon_authorization_id', true ),
 				'capture_now'             => false,
 			)
 		);
@@ -1630,16 +1587,16 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	public static function update_order_from_capture_response( $order, $response ) {
 		// @codingStandardsIgnoreStart
 		$capture_id = (string) $response->CaptureResult->CaptureDetails->AmazonCaptureId;
+		$order_id   = wc_apa_get_order_prop( $order, 'id' );
 		if ( ! $capture_id ) {
 			return false;
 		}
 		// @codingStandardsIgnoreEnd
 
-		/* translators: 1) Capture ID. */
+				/* translators: 1) Capture ID. */
 		$order->add_order_note( sprintf( __( 'Capture Attempted (Capture ID: %s)', 'woocommerce-gateway-amazon-payments-advanced' ), $capture_id ) );
 
-		$order->update_meta_data( 'amazon_capture_id', $capture_id );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_capture_id', $capture_id );
 
 		$order->payment_complete();
 
@@ -1657,7 +1614,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return bool Returns true if succeed.
 	 */
 	public static function refund_payment( $order_id, $capture_id, $amount, $note ) {
-		$order = wc_get_order( $order_id );
+		$order = new WC_Order( $order_id );
 		$ret   = false;
 
 		if ( 'amazon_payments_advanced' === wc_apa_get_order_prop( $order, 'payment_method' ) ) {
@@ -1695,8 +1652,7 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 				/* Translators: 1: refund amount, 2: refund note */
 				$order->add_order_note( sprintf( __( 'Refunded %1$s (%2$s)', 'woocommerce-gateway-amazon-payments-advanced' ), wc_price( $amount ), $note ) );
 
-				$order->update_meta_data( 'amazon_refund_id', $refund_id );
-				$order->save();
+				add_post_meta( $order_id, 'amazon_refund_id', $refund_id );
 
 				$ret = true;
 			}
@@ -1714,37 +1670,22 @@ class WC_Amazon_Payments_Advanced_API_Legacy extends WC_Amazon_Payments_Advanced
 	 * @return int Order ID.
 	 */
 	public static function get_order_id_from_reference_id( $reference_id ) {
-		add_filter(
-			'woocommerce_order_data_store_cpt_get_orders_query',
-			function ( $query, $query_vars ) {
-				if ( empty( $query_vars['amazon_reference_id'] ) ) {
-					return $query;
-				}
+		global $wpdb;
 
-				if ( empty( $query['meta_query'] ) || ! is_array( $query['meta_query'] ) ) {
-					$query['meta_query'] = array(); //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-				}
-
-				$query['meta_query'][] = array( //phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-					'key'   => 'amazon_reference_id',
-					'value' => esc_attr( $query_vars['amazon_reference_id'] ),
-				);
-
-				return $query;
-			},
-			10,
-			2
-		);
-
-		$orders = wc_get_orders(
-			array(
-				'amazon_reference_id' => $reference_id,
-				'limit'               => 1,
+		$order_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+			SELECT post_id
+			FROM $wpdb->postmeta
+			WHERE meta_key = 'amazon_reference_id'
+			AND meta_value = %s
+		",
+				$reference_id
 			)
 		);
 
-		if ( ! empty( $orders->orders[0] ) && $orders->orders[0] instanceof \WC_Order ) {
-			return $orders->orders[0]->get_id();
+		if ( ! is_wp_error( $order_id ) ) {
+			return $order_id;
 		}
 
 		return 0;

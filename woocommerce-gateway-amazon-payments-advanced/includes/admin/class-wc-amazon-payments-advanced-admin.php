@@ -45,9 +45,7 @@ class WC_Amazon_Payments_Advanced_Admin {
 
 		// Admin notices.
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-		add_action( 'admin_notices', array( $this, 'review_prompt' ) );
 		add_action( 'wp_ajax_amazon_pay_dismiss_notice', array( $this, 'ajax_dismiss_notice' ) );
-		add_action( 'wp_ajax_amazon_pay_dismiss_review_prompt', array( $this, 'ajax_dismiss_review_prompt' ) );
 
 		// Admin Scripts.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
@@ -180,13 +178,13 @@ class WC_Amazon_Payments_Advanced_Admin {
 			);
 		}
 
-		if ( ! WC_Amazon_Payments_Advanced_API::get_amazon_keys_set() && 'yes' === $this->settings['enabled'] && $current_section !== 'amazon_payments_advanced' ) {
+		if ( ! WC_Amazon_Payments_Advanced_API::get_amazon_keys_set() && 'yes' === $this->settings['enabled'] ) {
 			$notices[] = array(
 				'dismiss_action' => 'amazon_pay_dismiss_enable_notice',
 				'class'          => 'amazon-pay-enable-notice',
 				'text'           => sprintf(
 					// translators: 1) The URL to the Amazon Pay settings screen.
-					__( 'Amazon Pay is now enabled for WooCommerce. Please check the <a href="%1$s">configuration</a>. to make sure everything is set correctly to accept live payments.', 'woocommerce-gateway-amazon-payments-advanced' ),
+					__( 'Amazon Pay is now enabled for WooCommerce and ready to accept live payments. Please check the <a href="%1$s">configuration</a>. to make sure everything is set correctly.', 'woocommerce-gateway-amazon-payments-advanced' ),
 					esc_url( $this->get_settings_url() )
 				),
 				'is_dismissable' => true,
@@ -242,28 +240,6 @@ class WC_Amazon_Payments_Advanced_Admin {
 				'is_dismissable' => false,
 			);
 		}
-		$site_name = WC_Amazon_Payments_Advanced::get_site_name();
-		if ( 50 < strlen( $site_name ) ) {
-			$notices[] = array(
-				'dismiss_action' => 'amazon_pay_site_name_too_long_dismiss_notice',
-				'class'          => 'amazon_pay_site_name_too_long',
-				'text'           => sprintf(
-					/* translators: 1) The Site Name from Settings > General > Site Title. 2) URL to Settings > General > Site Title. */
-					__(
-						'Amazon Pay Gateway is <strong>not</strong> able to pass to Amazon your site\'s name as the 
-						<a target="_blank" rel="nofollow noopener" href="https://developer.amazon.com/docs/amazon-pay-checkout/buyer-communication.html">Merchant store name</a>.<br/>
-						This is happening because your current site name exceeds the 50 characters allowed by Amazon Pay API v2.<br/>
-						Your current site name is <strong>%1$s</strong> and can be changed from <a href="%2$s">Settings > General > Site Title</a>
-						The default you have set in your Amazon Merchant Account will be used instead.<br/>
-						This message\'s purpose is to notify you. Amazon Pay Gateway will continue to be functional without requiring an action from you.',
-						'woocommerce-gateway-amazon-payments-advanced'
-					),
-					$site_name,
-					esc_url( admin_url( '/options-general.php' ) )
-				),
-				'is_dismissable' => true,
-			);
-		}
 
 		return $notices;
 	}
@@ -298,12 +274,9 @@ class WC_Amazon_Payments_Advanced_Admin {
 							'title'       => array(),
 							'class'       => array(),
 							'data-toggle' => array(),
-							'target'      => array( '_self', '_blank' ),
-							'rel'         => array( 'nofollow', 'noopener' ),
 						),
 						'strong' => array(),
 						'em'     => array(),
-						'br'     => array(),
 					)
 				);
 				?>
@@ -322,108 +295,6 @@ class WC_Amazon_Payments_Advanced_Admin {
 			</div>
 			<?php
 		}
-	}
-
-	/**
-	 * Display a prompt for reviews!
-	 *
-	 * @return void
-	 */
-	public function review_prompt() {
-		global $current_section;
-
-		// Bail early and always if we don't have the keys set.
-		if ( ! WC_Amazon_Payments_Advanced_API::get_amazon_keys_set() ) {
-			return;
-		}
-
-		$anniversary_date  = get_option( 'amazon_payments_advanced_enabled_anniversary_date' );
-		$hidden_until_date = get_option( 'amazon_payments_advanced_hidden_until_date' );
-
-		// Set up the dates.
-		// We do this here, so its on admin side but not dependant on user visiting the plugin's settings.
-		if ( ! $anniversary_date || ! $hidden_until_date ) {
-			$anniversary_date  = time();
-			$hidden_until_date = strtotime( '+1 month' );
-			update_option( 'amazon_payments_advanced_enabled_anniversary_date', $anniversary_date );
-			update_option( 'amazon_payments_advanced_hidden_until_date', $hidden_until_date );
-		}
-
-		// If it should be hidden yet, bail!
-		if ( $hidden_until_date > time() ) {
-			return;
-		}
-
-		// We only want prompt to appear in plugin's settings page.
-		if ( ! isset( $current_section ) || 'amazon_payments_advanced' !== $current_section ) {
-			return;
-		}
-
-		$screen = get_current_screen();
-
-		// Ensures we are in plugin's settings page.
-		if ( ! isset( $screen, $screen->id ) || 'woocommerce_page_wc-settings' !== $screen->id ) {
-			return;
-		}
-		?>
-			<div class="notice notice-info amazon-pay-review-prompt">
-				<p>
-					<?php esc_html_e( 'We\'d be grateful if you could give our plugin a 5-star rating. Your reviews help us continue to grow!', 'woocommerce-gateway-amazon-payments-advanced' ); ?>
-				</p>
-
-				<p>
-					<a href="https://wordpress.org/support/plugin/woocommerce-gateway-amazon-payments-advanced/reviews/" target="_blank" rel="nofollow" class="button-secondary">
-						<?php esc_html_e( 'Yes you deserve it!', 'woocommerce-gateway-amazon-payments-advanced' ); ?>
-					</a>
-				</p>
-				<p>
-					<a class="amazon-pay-review-prompt-dismiss" href="#" target="_blank" rel="nofollow" >
-						<?php esc_html_e( 'Hide this message / Already did!', 'woocommerce-gateway-amazon-payments-advanced' ); ?>
-					</a>
-				</p>
-				<p>
-					<a href="https://woocommerce.com/my-account/create-a-ticket/?utm_source=partner_amazon&utm_medium=product&utm_campaign=create-ticket" target="_blank" rel="nofollow" >
-						<?php esc_html_e( 'Actually, I need help...', 'woocommerce-gateway-amazon-payments-advanced' ); ?>
-					</a>
-				</p>
-				<script type="application/javascript">
-				( function( $ ) {
-					$( '.amazon-pay-review-prompt' ).on( 'click', '.amazon-pay-review-prompt-dismiss', function( e ) {
-						e.preventDefault();
-
-						jQuery.post( "<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>", {
-							action: "amazon_pay_dismiss_review_prompt",
-							nonce: "<?php echo esc_js( wp_create_nonce( 'amazon_pay_dismiss_review_prompt' ) ); ?>"
-						} ).done( function ( result ) {
-							$( '.amazon-pay-review-prompt' ).remove();
-						} );
-					} );
-				} )( jQuery );
-				</script>
-			</div>
-		<?php
-	}
-
-	/**
-	 * Handle plugin's review prompt dismissal.
-	 *
-	 * @return void
-	 */
-	public function ajax_dismiss_review_prompt() {
-		check_ajax_referer( 'amazon_pay_dismiss_review_prompt', 'nonce' );
-
-		$anniversary_date = get_option( 'amazon_payments_advanced_enabled_anniversary_date' );
-
-		// Start from the stored anniversary date.
-		// Add a year in each loop until the result is in the future.
-		$hidden_until_date = is_numeric( $anniversary_date ) ? (int) $anniversary_date : time();
-		while ( $hidden_until_date <= time() ) {
-			$hidden_until_date = strtotime( '+1 year', $hidden_until_date );
-		}
-
-		update_option( 'amazon_payments_advanced_hidden_until_date', $hidden_until_date );
-
-		wp_die( '', 200 );
 	}
 
 	/**
@@ -459,10 +330,8 @@ class WC_Amazon_Payments_Advanced_Admin {
 			$current_screen = 'wc_apa_settings';
 		}
 
-		$screen_to_check = WC_Amazon_Payments_Advanced_Utils::get_edit_order_screen_id();
-
 		switch ( $current_screen ) {
-			case $screen_to_check:
+			case 'shop_order':
 			case 'wc_apa_settings':
 				break;
 			default:
@@ -472,11 +341,6 @@ class WC_Amazon_Payments_Advanced_Admin {
 		$js_suffix = '.min.js';
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			$js_suffix = '.js';
-		}
-
-		$css_suffix = '.min.css';
-		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-			$css_suffix = '.css';
 		}
 
 		$params = array(
@@ -498,12 +362,11 @@ class WC_Amazon_Payments_Advanced_Admin {
 			'secret_keys_urls'      => WC_Amazon_Payments_Advanced_API::get_secret_key_page_urls(), // LEGACY FIX.
 		);
 
-		wp_register_script( 'amazon_payments_admin', wc_apa()->plugin_url . '/build/js/non-block/amazon-wc-admin' . $js_suffix, array( 'jquery' ), wc_apa()->version, true );
+		wp_register_script( 'amazon_payments_admin', wc_apa()->plugin_url . '/assets/js/amazon-wc-admin' . $js_suffix, array(), wc_apa()->version, true );
 		wp_localize_script( 'amazon_payments_admin', 'amazon_admin_params', $params );
 		wp_enqueue_script( 'amazon_payments_admin' );
 
-		wp_enqueue_style( 'amazon_payments_admin', wc_apa()->plugin_url . '/build/css/style-admin' . $css_suffix, array(), wc_apa()->version );
-		wp_enqueue_style( 'amazon_payments_advanced_hide_express', wc_apa()->plugin_url . '/build/css/hide-amazon-express-admin' . $css_suffix, array(), wc_apa()->version );
+		wp_enqueue_style( 'amazon_payments_admin', wc_apa()->plugin_url . '/assets/css/style-admin.css', array(), wc_apa()->version );
 	}
 
 	/**

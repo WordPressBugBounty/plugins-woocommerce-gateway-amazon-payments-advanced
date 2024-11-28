@@ -42,9 +42,8 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 				$this->clear_stored_states( $order_id );
 				break;
 			case 'authorize':
-				$order->delete_meta_data( 'amazon_authorization_id' );
-				$order->delete_meta_data( 'amazon_capture_id' );
-				$order->save();
+				delete_post_meta( $order_id, 'amazon_authorization_id' );
+				delete_post_meta( $order_id, 'amazon_capture_id' );
 
 				// $id is order reference.
 				wc_apa()->log( 'Info: Trying to authorize payment in order reference ' . $id );
@@ -53,9 +52,8 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 				$this->clear_stored_states( $order_id );
 				break;
 			case 'authorize_capture':
-				$order->delete_meta_data( 'amazon_authorization_id' );
-				$order->delete_meta_data( 'amazon_capture_id' );
-				$order->save();
+				delete_post_meta( $order_id, 'amazon_authorization_id' );
+				delete_post_meta( $order_id, 'amazon_capture_id' );
 
 				// $id is order reference.
 				wc_apa()->log( 'Info: Trying to authorize and capture payment in order reference ' . $id );
@@ -110,16 +108,9 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 	 * @param int $order_id Order ID.
 	 */
 	private function clear_stored_states( $order_id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof WC_Order ) ) {
-			return;
-		}
-
-		$order->delete_meta_data( 'amazon_reference_state' );
-		$order->delete_meta_data( 'amazon_capture_state' );
-		$order->delete_meta_data( 'amazon_authorization_state' );
-		$order->save();
-
+		delete_post_meta( $order_id, 'amazon_reference_state' );
+		delete_post_meta( $order_id, 'amazon_capture_state' );
+		delete_post_meta( $order_id, 'amazon_authorization_state' );
 		do_action( 'woocommerce_amazon_pa_v1_cleared_stored_states', $order_id );
 	}
 
@@ -159,10 +150,10 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 		$order_id = $order->get_id();
 
 		// Get ids.
-		$amazon_authorization_id = $order->get_meta( 'amazon_authorization_id', true, 'edit' );
-		$amazon_reference_id     = $order->get_meta( 'amazon_reference_id', true, 'edit' );
-		$amazon_capture_id       = $order->get_meta( 'amazon_capture_id', true, 'edit' );
-		$amazon_refund_ids       = wp_list_pluck( $order->get_meta( 'amazon_refund_id', false, 'edit' ), 'value' );
+		$amazon_authorization_id = get_post_meta( $order_id, 'amazon_authorization_id', true );
+		$amazon_reference_id     = get_post_meta( $order_id, 'amazon_reference_id', true );
+		$amazon_capture_id       = get_post_meta( $order_id, 'amazon_capture_id', true );
+		$amazon_refund_ids       = get_post_meta( $order_id, 'amazon_refund_id', false );
 
 		$override = apply_filters( 'woocommerce_amazon_pa_v1_order_admin_actions_panel', false, $order, $actions );
 
@@ -212,7 +203,7 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 
 			// Display refunds.
 			if ( $amazon_refund_ids ) {
-				$refunds = (array) $order->get_meta( 'amazon_refunds', true, 'edit' );
+				$refunds = (array) get_post_meta( $order_id, 'amazon_refunds', true );
 
 				foreach ( $amazon_refund_ids as $amazon_refund_id ) {
 
@@ -250,8 +241,7 @@ class WC_Amazon_Payments_Advanced_Order_Admin_Legacy {
 					}
 				}
 
-				$order->update_meta_data( 'amazon_refunds', $refunds );
-				$order->save();
+				update_post_meta( $order_id, 'amazon_refunds', $refunds );
 			}
 		} elseif ( $amazon_authorization_id ) {
 

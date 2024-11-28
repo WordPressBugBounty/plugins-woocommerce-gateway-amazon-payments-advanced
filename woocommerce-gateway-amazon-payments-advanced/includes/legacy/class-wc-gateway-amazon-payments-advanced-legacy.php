@@ -52,6 +52,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 
 		add_filter( 'woocommerce_ajax_get_endpoint', array( $this, 'filter_ajax_endpoint' ), 10, 2 );
 
+		add_action( 'wp_footer', array( $this, 'maybe_hide_standard_checkout_button' ) );
 		add_action( 'wp_footer', array( $this, 'maybe_hide_amazon_buttons' ) );
 
 		// AJAX calls to get updated order reference details.
@@ -313,9 +314,8 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 			$currency    = wc_apa_get_order_prop( $order, 'order_currency' );
 
 			wc_apa()->log( "Info: Beginning processing of payment for order {$order_id} for the amount of {$order_total} {$currency}. Amazon reference ID: {$amazon_reference_id}." );
-			$order->update_meta_data( 'amazon_payment_advanced_version', WC_AMAZON_PAY_VERSION_CV1 );
-			$order->update_meta_data( 'woocommerce_version', WC()->version );
-			$order->save();
+			update_post_meta( $order_id, 'amazon_payment_advanced_version', WC_AMAZON_PAY_VERSION_CV1 );
+			update_post_meta( $order_id, 'woocommerce_version', WC()->version );
 
 			// Get order details and save them to the order later.
 			$order_details = $this->get_amazon_order_details( $amazon_reference_id );
@@ -370,10 +370,9 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 			}
 
 			// Store reference ID in the order.
-			$order->update_meta_data( 'amazon_reference_id', $amazon_reference_id );
-			$order->update_meta_data( '_transaction_id', $amazon_reference_id );
-			$order->update_meta_data( 'amazon_order_language', $order_language );
-			$order->save();
+			update_post_meta( $order_id, 'amazon_reference_id', $amazon_reference_id );
+			update_post_meta( $order_id, '_transaction_id', $amazon_reference_id );
+			update_post_meta( $order_id, 'amazon_order_language', $order_language );
 
 			wc_apa()->log( sprintf( 'Info: Payment Capture method is %s', $this->payment_capture ? $this->payment_capture : 'authorize and capture' ) );
 
@@ -442,9 +441,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 	 */
 	public function process_async_auth( $order, $amazon_reference_id ) {
 
-		$order->update_meta_data( 'amazon_timed_out_transaction', true );
-		$order->save();
-
+		update_post_meta( $order->get_id(), 'amazon_timed_out_transaction', true );
 		$order->update_status( 'on-hold', __( 'Transaction with Amazon Pay is currently being validated.', 'woocommerce-gateway-amazon-payments-advanced' ) );
 
 		// https://pay.amazon.com/it/developer/documentation/lpwa/201953810
@@ -651,13 +648,8 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 	 */
 	public static function do_process_refund( $order_id, $refund_amount = null, $reason = '' ) {
 		wc_apa()->log( 'Info: Trying to refund for order ' . $order_id );
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			/* translators: Order number */
-			return new WP_Error( 'error', sprintf( __( 'Unable to refund order %s. Order id is invalid.', 'woocommerce-gateway-amazon-payments-advanced' ), $order_id ) );
-		}
 
-		$amazon_capture_id = $order->get_meta( 'amazon_capture_id', true, 'edit' );
+		$amazon_capture_id = get_post_meta( $order_id, 'amazon_capture_id', true );
 		if ( empty( $amazon_capture_id ) ) {
 			/* translators: Order number */
 			return new WP_Error( 'error', sprintf( __( 'Unable to refund order %s. Order does not have Amazon capture reference. Make sure order has been captured.', 'woocommerce-gateway-amazon-payments-advanced' ), $order_id ) );
@@ -713,7 +705,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 				'OrderReferenceAttributes.SellerNote' => $seller_note,
 				'OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId' => $order->get_order_number(),
 				'OrderReferenceAttributes.SellerOrderAttributes.StoreName' => $site_name,
-				'OrderReferenceAttributes.PlatformId' => WC_Amazon_Payments_Advanced_API_Legacy::AMAZON_PAY_FOR_WOOCOMMERCE_SP_ID,
+				'OrderReferenceAttributes.PlatformId' => 'A1BVJDFFHQ7US4',
 				'OrderReferenceAttributes.SellerOrderAttributes.CustomInformation' => $version_note,
 			),
 			$overrides
@@ -1034,7 +1026,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 	 * @return string
 	 */
 	public function maybe_render_timeout_transaction_order_received_text( $text, $order ) {
-		if ( $order && $order->has_status( 'on-hold' ) && $order->get_meta( 'amazon_timed_out_transaction', true, 'edit' ) ) {
+		if ( $order && $order->has_status( 'on-hold' ) && get_post_meta( $order->get_id(), 'amazon_timed_out_transaction', true ) ) {
 			$text = __( 'Your transaction with Amazon Pay is currently being validated. Please be aware that we will inform you shortly as needed.', 'woocommerce-gateway-amazon-payments-advanced' );
 		}
 		return $text;
@@ -1597,13 +1589,35 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 	}
 
 	/**
+	 * Maybe hide standard WC checkout button on the cart, if enabled
+	 */
+	public function maybe_hide_standard_checkout_button() {
+		if ( 'yes' === $this->settings['enabled'] && 'yes' === $this->settings['hide_standard_checkout_button'] ) {
+			?>
+				<style type="text/css">
+					.woocommerce a.checkout-button,
+					.woocommerce input.checkout-button,
+					.cart input.checkout-button,
+					.cart a.checkout-button,
+					.widget_shopping_cart a.checkout {
+						display: none !important;
+					}
+				</style>
+			<?php
+		}
+	}
+
+	/**
 	 * Maybe hides Amazon Pay buttons on cart or checkout pages if hide button mode
 	 * is enabled.
 	 *
 	 * @since 1.6.0
 	 */
 	public function maybe_hide_amazon_buttons() {
-		if ( ! $this->is_hide_button_mode_enabled() ) {
+		$hide_button_mode_enabled = ( 'yes' === $this->settings['enabled'] && 'yes' === $this->settings['hide_button_mode'] );
+		$hide_button_mode_enabled = apply_filters( 'woocommerce_amazon_payments_hide_amazon_buttons', $hide_button_mode_enabled );
+
+		if ( ! $hide_button_mode_enabled ) {
 			return;
 		}
 
@@ -1752,16 +1766,11 @@ class WC_Gateway_Amazon_Payments_Advanced_Legacy extends WC_Gateway_Amazon_Payme
 			$js_suffix = '.js';
 		}
 
-		$css_suffix = '.min.css';
-		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-			$css_suffix = '.css';
-		}
-
 		$type = ( 'yes' === $this->settings['enable_login_app'] ) ? 'app' : 'standard';
 
-		wp_enqueue_style( 'amazon_payments_advanced', wc_apa()->plugin_url . '/build/css/amazon-pay' . $css_suffix, array(), wc_apa()->version );
+		wp_enqueue_style( 'amazon_payments_advanced', wc_apa()->plugin_url . '/assets/css/style.css', array(), wc_apa()->version );
 		wp_enqueue_script( 'amazon_payments_advanced_widgets', WC_Amazon_Payments_Advanced_API_Legacy::get_widgets_url(), array(), wc_apa()->version, true );
-		wp_enqueue_script( 'amazon_payments_advanced', wc_apa()->plugin_url . '/build/js/non-block/legacy/amazon-' . $type . '-widgets' . $js_suffix, array( 'jquery' ), wc_apa()->version, true );
+		wp_enqueue_script( 'amazon_payments_advanced', wc_apa()->plugin_url . '/assets/js/legacy/amazon-' . $type . '-widgets' . $js_suffix, array(), wc_apa()->version, true );
 
 		$redirect_page = is_cart() ? $this->get_amazon_payments_checkout_url() : $this->get_amazon_payments_clean_logout_url();
 

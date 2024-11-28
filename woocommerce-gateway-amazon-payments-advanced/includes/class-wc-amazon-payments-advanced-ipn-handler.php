@@ -458,8 +458,6 @@ class WC_Amazon_Payments_Advanced_IPN_Handler extends WC_Amazon_Payments_Advance
 				throw new Exception( 'Not Implemented' );
 		}
 
-		$order_id = apply_filters( 'woocommerce_amazon_pa_merchant_metadata_reference_id_reverse', $order_id );
-
 		if ( is_numeric( $order_id ) ) {
 			$order = wc_get_order( $order_id );
 		} else {
@@ -614,7 +612,7 @@ class WC_Amazon_Payments_Advanced_IPN_Handler extends WC_Amazon_Payments_Advance
 			return false;
 		}
 
-		if ( \PHP_VERSION_ID < 80000 && function_exists( 'libxml_disable_entity_loader' ) ) {
+		if ( function_exists( 'libxml_disable_entity_loader' ) ) {
 			$old = libxml_disable_entity_loader( true );
 		}
 

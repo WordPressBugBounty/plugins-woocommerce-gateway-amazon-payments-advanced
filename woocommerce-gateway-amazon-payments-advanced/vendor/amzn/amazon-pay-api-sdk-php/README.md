@@ -64,43 +64,10 @@ Namespace for this package is Amazon\Pay\API so that there are no conflicts with
         'public_key_id' => 'ABC123DEF456XYZ',  // RSA Public Key ID (this is not the Merchant or Seller ID)
         'private_key'   => 'keys/private.pem', // Path to RSA Private Key (or a string representation)
         'sandbox'       => true,               // true (Sandbox) or false (Production) boolean
-        'region'        => 'us',                // Must be one of: 'us', 'eu', 'jp'
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2'  //Amazon Signing Algorithm, Optional: uses AMZN-PAY-RSASSA-PSS if not specified
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'region'        => 'us'                // Must be one of: 'us', 'eu', 'jp' 
     );
 ```
-If you have created environment specific keys (i.e Public Key Starts with LIVE or SANDBOX) in Seller Central, then use those PublicKeyId & PrivateKey. In this case, there is no need to pass the Sandbox parameter to the ApiConfiguration.
 
-```php
-    $amazonpay_config = array(
-	    'public_key_id' => 'MY_PUBLIC_KEY_ID',  // LIVE-XXXXX or SANDBOX-XXXXX
-	    'private_key'   => 'keys/private.pem', // Path to RSA Private Key (or a string representation)
-	    'region'        => 'us', // Must be one of: 'us', 'eu', 'jp'
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2'  //Amazon Signing Algorithm, Optional: uses AMZN-PAY-RSASSA-PSS if not specified
-	);
-```
-
-If you have want to enable proxy support, you can set it in the $amazonpay_config in the following way:
-```php
-    $amazonpay_config = array(
-        'public_key_id' => 'ABC123DEF456XYZ',  // RSA Public Key ID (this is not the Merchant or Seller ID)
-        'private_key'   => 'keys/private.pem', // Path to RSA Private Key (or a string representation)
-        'sandbox'       => true,               // true (Sandbox) or false (Production) boolean
-        'region'        => 'us',               // Must be one of: 'us', 'eu', 'jp'
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',  //Amazon Signing Algorithm, Optional: uses AMZN-PAY-RSASSA-PSS if not specified
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4',            // (optional) Solution Provider Platform Version in Semantic Versioning Format
-        'proxy' => [
-            'host' => 'proxy_host',
-            'port' => 'proxy_port',
-            'username' => 'proxy_username',
-            'password' => 'proxy_password',
-        ]
-    );
-```
 # Versioning
 
 The pay-api.amazon.com|eu|jp endpoint uses versioning to allow future updates.  The major version of this SDK will stay aligned with the API version of the endpoint.
@@ -251,8 +218,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => false,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
+        'sandbox'       => false
     );
     $payload = array(
         'amazonOrderReferenceId' => 'P01-0000000-0000000',
@@ -290,11 +256,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'sandbox'       => true
     );
     $payload = array(
         'webCheckoutDetails' => array(
@@ -333,11 +295,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'sandbox'       => true
     );
     $payload = array(
         'webCheckoutDetails' => array(
@@ -376,11 +334,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'sandbox'       => true
     );
 
     try {
@@ -430,11 +384,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'sandbox'       => true
     );
 
     $payload = array(
@@ -482,11 +432,7 @@ An alternate way to do Step 2 would be to use PHP arrays and programmatically ge
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
-        'integrator_id'      => 'AXXXXXXXXXXXXX',   // (optional) Solution Provider Platform Id in Amz UID Format
-        'integrator_version' => '1.2.3',            // (optional) Solution Provider Plugin Version in Semantic Versioning Format
-        'platform_version'   => '0.0.4'            // (optional) Solution Provider Platform Version in Semantic Versioning Format
+        'sandbox'       => true
     );
 
     $payload = array(
@@ -532,8 +478,7 @@ The signatures generated by this helper function are only valid for the Checkout
         'public_key_id' => 'MY_PUBLIC_KEY_ID',
         'private_key'   => 'keys/private.pem',
         'region'        => 'US',
-        'sandbox'       => true,
-        'algorithm'     => 'AMZN-PAY-RSASSA-PSS-V2',
+        'sandbox'       => true
     );
 
     $client = new Amazon\Pay\API\Client($amazonpay_config);
@@ -542,6 +487,7 @@ The signatures generated by this helper function are only valid for the Checkout
     echo $signature . "\n";
     ?>
 ```
+
 
 # Manual Signing (Advanced Use-Cases Only)
 
@@ -652,295 +598,4 @@ Example call to createSignature function with values:
 
     $client = new Client($amazonpay_config);
     $signedInput = $client->createSignature($method, $url, $requestParameters, $pre_signed_headers, $payload, '20180326T203730Z');
-```
-
-#  Reporting APIs code samples
-
-## Amazon Checkout v2 Reporting APIs - GetReport API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => false
-    );
-
-    $requestPayload = array(
-        'reportTypes' => '_GET_FLAT_FILE_OFFAMAZONPAYMENTS_ORDER_REFERENCE_DATA_',
-        'processingStatuses' => 'COMPLETED',
-        'pageSize' => '10'
-    );
-
-    try {
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->getReports($requestPayload);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - GetReportById API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    try {
-        $reportId = "1234567890";
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->getReportById($reportId);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - GetReportDocument API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    try {
-        $reportDocumentId = "amzn1.tortuga.0.000000000-0000-0000-0000-000000000000.00000000000000";
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->getReportDocument($reportDocumentId);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - GetReportSchedules API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    try {
-        $reportTypes = "_GET_FLAT_FILE_OFFAMAZONPAYMENTS_ORDER_REFERENCE_DATA_,_GET_FLAT_FILE_OFFAMAZONPAYMENTS_BILLING_AGREEMENT_DATA_";
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->getReportSchedules($reportTypes);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - GetReportScheduleById API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    try {
-        $reportScheduleId = "1234567890";
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->getReportScheduleById($reportScheduleId);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - CreateReport API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    $headers = array('x-amz-pay-Idempotency-Key' => uniqid());
-
-    try {
-        $requestPayload = array(
-            'reportType' => '_GET_FLAT_FILE_OFFAMAZONPAYMENTS_AUTHORIZATION_DATA_',
-            'startTime' => '20221114T074550Z',
-            'endTime' => '20221114T074550Z'
-        );
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->createReport($requestPayload);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - CreateReportSchedule API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    $headers = array('x-amz-pay-Idempotency-Key' => uniqid());
-
-    try {
-        $requestPayload = array(
-            'reportType' => '_GET_FLAT_FILE_OFFAMAZONPAYMENTS_ORDER_REFERENCE_DATA_',
-            'scheduleFrequency' => 'P1D',
-            'nextReportCreationTime' => '20221114T074550Z',
-            'deleteExistingSchedule' => false
-        );
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->createReportSchedule($requestPayload);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
-```
-
-
-## Amazon Checkout v2 Reporting APIs - CancelReportSchedule API
-
-```php
-    <?php
-    include 'vendor/autoload.php';
-
-    $amazonpay_config = array(
-        'public_key_id' => 'MY_PUBLIC_KEY_ID',
-        'private_key'   => 'keys/private.pem',
-        'region'        => 'US',
-        'sandbox'       => true
-    );
-
-    try {
-        $reportScheduleId = "1234567890";
-        $client = new Amazon\Pay\API\Client($amazonpay_config);
-        $result = $client->cancelReportSchedule($reportScheduleId);
-
-        if ($result['status'] === 200) {
-            // success
-            $response = $result['response'];
-            echo $response;
-        } else {
-            // check the error
-            echo 'status=' . $result['status'] . '; response=' . $result['response'] . "\n";
-        }
-        } catch (\Exception $e) {
-            // handle the exception
-            echo $e . "\n";
-        }
-    ?>
 ```

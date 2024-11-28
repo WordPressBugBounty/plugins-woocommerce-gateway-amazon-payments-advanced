@@ -11,14 +11,6 @@ class HttpCurl
 
     private $curlResponseInfo = null;
     private $requestId = null;
-    private $proxyConfig;
-
-    /**
-     * @param array $proxyConfig
-     */
-    public function __construct ($proxyConfig = []) {
-        $this->proxyConfig = $proxyConfig;
-    }
 
     private function header_callback($ch, $header_line)
     {
@@ -28,7 +20,7 @@ class HttpCurl
             $middle = explode(":", $part, 2);
             if (isset($middle[1])) {
                 $key = strtolower(trim($middle[0]));
-                if ($key === 'x-amz-pay-request-id') {
+                if ($key == 'x-amz-pay-request-id') {
                     $this->requestId = trim($middle[1]);
                 }
             }
@@ -48,16 +40,12 @@ class HttpCurl
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HEADERFUNCTION, array($this, 'header_callback'));
 
-        if ($this->useProxy()) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxyConfig['host'] . ':' . $this->proxyConfig['port']);
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyConfig['username'] . ':' . $this->proxyConfig['password']);
-        }
-
         return $ch;
     }
 
 
-    /* Send using curl */
+    /* Send using curl
+     */
     private function httpSend($method, $url, $payload, $postSignedHeaders)
     {
         // Ensure we never send the "Expect: 100-continue" header by adding
@@ -69,12 +57,15 @@ class HttpCurl
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $postSignedHeaders);
 
-        return $this->execute($ch);
+        $response = $this->execute($ch);
+        return $response;
     }
 
     /* Execute Curl request */
     private function execute($ch)
     {
+        $response = '';
+
         $response = curl_exec($ch);
         if ($response === false) {
             $error_msg = "Unable to send request, underlying exception of " . curl_error($ch);
@@ -119,11 +110,19 @@ class HttpCurl
                     );
 
                     $statusCode = $response['status'];
-                    $shouldRetry = false;
-                    $retryCodes = array(408, 429, 500, 502, 503, 504);
-                    if (in_array($statusCode, $retryCodes)) {
-                        $this->pauseOnRetry(++$retries);
-                        $shouldRetry = $retries <= self::MAX_ERROR_RETRY;
+                    if ($statusCode == 200) {
+                        $shouldRetry = false;
+                    } elseif ($statusCode == 429 || $statusCode == 500 || $statusCode == 503) {
+
+                        $shouldRetry = true;
+                        if ($shouldRetry) {
+                            $this->pauseOnRetry(++$retries, $response);
+                            if ($retries > self::MAX_ERROR_RETRY) {
+                                $shouldRetry = false;
+                            }
+                        }
+                    } else {
+                        $shouldRetry = false;
                     }
                 } catch (\Exception $e) {
                     throw $e;
@@ -137,12 +136,12 @@ class HttpCurl
     }
 
     /* Exponential sleep on failed request
-     * Up to three retries will occur if first request fails
+     * Up to three retries will occur if first reqest fails
      * after 1.0 second, 2.2 seconds, and finally 7.0 seconds
      * @param retries current retry
      * @throws Exception if maximum number of retries has been reached
      */
-    private function pauseOnRetry($retries)
+    private function pauseOnRetry($retries, $response)
     {
         if ($retries <= self::MAX_ERROR_RETRY) {
             // PHP delays are in microseconds (1 million microsecond = 1 sec)
@@ -154,8 +153,6 @@ class HttpCurl
         }
     }
 
-    private function useProxy() {
-        return !empty($this->proxyConfig['username']) && !empty($this->proxyConfig['password']) && !empty($this->proxyConfig['host']) && !empty($this->proxyConfig['port']);
-    }
-
 }
+
+?>

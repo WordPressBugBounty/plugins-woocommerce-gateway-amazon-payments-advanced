@@ -79,12 +79,11 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 			$order_total = $order->get_total();
 			$currency    = wc_apa_get_order_prop( $order, 'order_currency' );
 
-			$order->update_meta_data( 'amazon_reference_id', $amazon_reference_id );
+			update_post_meta( $order_id, 'amazon_reference_id', $amazon_reference_id );
 
 			wc_apa()->log( "Info: Beginning processing of payment for (subscription) order {$order_id} for the amount of {$order_total} {$currency}." );
-			$order->update_meta_data( 'amazon_payment_advanced_version', WC_AMAZON_PAY_VERSION_CV1 );
-			$order->update_meta_data( 'woocommerce_version', WC()->version );
-			$order->save();
+			update_post_meta( $order_id, 'amazon_payment_advanced_version', WC_AMAZON_PAY_VERSION_CV1 );
+			update_post_meta( $order_id, 'woocommerce_version', WC()->version );
 
 			// Check if we are under SCA.
 			$is_sca = WC_Amazon_Payments_Advanced_API_Legacy::is_sca_region();
@@ -98,27 +97,29 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 
 			// Get the Billing Agreement Details, with FULL address (now that we've confirmed).
 			$result = $this->get_billing_agreement_details( $order_id, $amazon_billing_agreement_id );
-			if ( is_wp_error( $result ) ) {
-				$error_msg = $result->get_error_message( 'billing_agreemment_details_failed' ) ? $result->get_error_message( 'billing_agreemment_details_failed' ) : $result->get_error_message();
-				throw new Exception( $error_msg );
-			}
 
 			// Store the subscription destination.
 			$this->store_subscription_destination( $order_id, $result );
 
 			// Store Billing Agreement ID on the order and it's subscriptions.
-			$order->update_meta_data( 'amazon_billing_agreement_id', $amazon_billing_agreement_id );
-			$order->save();
+			$result = update_post_meta( $order_id, 'amazon_billing_agreement_id', $amazon_billing_agreement_id );
 
-			wc_apa()->log( "Info: Successfully stored billing agreement in meta for order {$order_id}." );
+			if ( $result ) {
+				wc_apa()->log( "Info: Successfully stored billing agreement in meta for order {$order_id}." );
+			} else {
+				wc_apa()->log( "Error: Failed to store billing agreement in meta for order {$order_id}." );
+			}
 
 			$subscriptions = wcs_get_subscriptions_for_order( $order_id );
 			foreach ( $subscriptions as $subscription ) {
 				$subscription_id = wc_apa_get_order_prop( $subscription, 'id' );
-				$subscription->update_meta_data( 'amazon_billing_agreement_id', $amazon_billing_agreement_id );
-				$subscription->save();
+				$result          = update_post_meta( $subscription_id, 'amazon_billing_agreement_id', $amazon_billing_agreement_id );
 
-				wc_apa()->log( "Info: Successfully stored billing agreement in meta for subscription {$subscription_id} (parent order {$order_id})." );
+				if ( $result ) {
+					wc_apa()->log( "Info: Successfully stored billing agreement in meta for subscription {$subscription_id} (parent order {$order_id})." );
+				} else {
+					wc_apa()->log( "Error: Failed to store billing agreement in meta for subscription {$subscription_id} (parent order {$order_id})." );
+				}
 			}
 
 			// Stop execution if this is being processed by SCA.
@@ -193,7 +194,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 			/* translators: 1) Subscription IDs */
 			'BillingAgreementAttributes.SellerBillingAgreementAttributes.SellerBillingAgreementId' => sprintf( __( 'Subscription(s): %s.', 'woocommerce-gateway-amazon-payments-advanced' ), implode( ', ', $subscription_ids ) ),
 			'BillingAgreementAttributes.SellerBillingAgreementAttributes.StoreName' => $site_name,
-			'BillingAgreementAttributes.PlatformId' => WC_Amazon_Payments_Advanced_API_Legacy::AMAZON_PAY_FOR_WOOCOMMERCE_SP_ID,
+			'BillingAgreementAttributes.PlatformId' => 'A1BVJDFFHQ7US4',
 			'BillingAgreementAttributes.SellerBillingAgreementAttributes.CustomInformation' => $version_note,
 		);
 
@@ -201,13 +202,9 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 		$response = WC_Amazon_Payments_Advanced_API_Legacy::request( $request_args );
 		$order_id = wc_apa_get_order_prop( $order, 'id' );
 
-		try {
-			$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
+		$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
 
-			wc_apa()->log( "Info: SetBillingAgreementDetails for order {$order_id} with billing agreement: {$amazon_billing_agreement_id}." );
-		} catch ( Exception $e ) {
-			wc_apa()->log( "Error: Exception encountered in 'SetBillingAgreementDetails': {$e->getMessage()}" );
-		}
+		wc_apa()->log( "Info: SetBillingAgreementDetails for order {$order_id} with billing agreement: {$amazon_billing_agreement_id}." );
 
 		return $response;
 
@@ -240,13 +237,10 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 		}
 
 		$response = WC_Amazon_Payments_Advanced_API_Legacy::request( $confirm_args );
-		try {
-			$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
 
-			wc_apa()->log( "Info: ConfirmBillingAgreement for Billing Agreement ID: {$amazon_billing_agreement_id}." );
-		} catch ( Exception $e ) {
-			wc_apa()->log( "Error: Exception encountered in 'ConfirmBillingAgreement': {$e->getMessage()}" );
-		}
+		$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
+
+		wc_apa()->log( "Info: ConfirmBillingAgreement for Billing Agreement ID: {$amazon_billing_agreement_id}." );
 
 		return $response;
 
@@ -372,23 +366,9 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 			)
 		);
 
-		try {
-			$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
+		$this->handle_generic_api_response_errors( __METHOD__, $response, $order_id, $amazon_billing_agreement_id );
 
-			wc_apa()->log( "Info: GetBillingAgreementDetails for Billing Agreement ID: {$amazon_billing_agreement_id}." );
-		} catch ( Exception $e ) {
-			wc_apa()->log( "Error: Exception encountered in 'GetBillingAgreementDetails': {$e->getMessage()}" );
-
-			//phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			return new WP_Error(
-				'billing_agreemment_details_failed',
-				is_object( $response ) && ! empty( $response->Error ) && is_object( $response->Error->Message ) && ! empty( $response->Error->Message ) ?
-				$response->Error->Message :
-				/* Translators: The billing agreement id. */
-				sprintf( __( 'Amazon API responded with an unexpected error when requesting for "GetBillingAgreementDetails" of billing agreement with ID %s', 'woocommerce-gateway-amazon-payments-advanced' ), $amazon_billing_agreement_id )
-			);
-			//phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		}
+		wc_apa()->log( "Info: GetBillingAgreementDetails for Billing Agreement ID: {$amazon_billing_agreement_id}." );
 		return $response;
 	}
 
@@ -594,12 +574,12 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 		}
 
 		$order_id                    = wc_apa_get_order_prop( $order, 'id' );
-		$amazon_billing_agreement_id = $order->get_meta( 'amazon_billing_agreement_id', true, 'edit' );
+		$amazon_billing_agreement_id = get_post_meta( $order_id, 'amazon_billing_agreement_id', true );
 		$currency                    = wc_apa_get_order_prop( $order, 'currency' );
 
 		// Cloned meta in renewal order might be prefixed with `_`.
 		if ( ! $amazon_billing_agreement_id ) {
-			$amazon_billing_agreement_id = $order->get_meta( '_amazon_billing_agreement_id', true, 'edit' );
+			$amazon_billing_agreement_id = get_post_meta( $order_id, '_amazon_billing_agreement_id', true );
 		}
 
 		try {
@@ -627,7 +607,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 			/* translators: 1) Reason. */
 			$order->add_order_note( sprintf( __( 'Amazon Pay subscription renewal failed - %s', 'woocommerce-gateway-amazon-payments-advanced' ), $e->getMessage() ) );
 
-			wc_apa()->log( "Error: Exception encountered trying to renew subscription with Amazon Pay: {$e->getMessage()}" );
+			wc_apa()->log( "Error: Exception encountered: {$e->getMessage()}" );
 		}
 	}
 
@@ -644,7 +624,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 		}
 
 		$order_id                    = wc_apa_get_order_prop( $order, 'id' );
-		$amazon_billing_agreement_id = $order->get_meta( 'amazon_billing_agreement_id', true, 'edit' );
+		$amazon_billing_agreement_id = get_post_meta( $order_id, 'amazon_billing_agreement_id', true );
 
 		if ( $amazon_billing_agreement_id ) {
 			try {
@@ -671,7 +651,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 
 				wc_apa()->log( "Info: CloseBillingAgreement for order {$order_id} with billing agreement: {$amazon_billing_agreement_id}." );
 			} catch ( Exception $e ) {
-				wc_apa()->log( "Error: Exception encountered in 'CloseBillingAgreement': {$e->getMessage()}" );
+				wc_apa()->log( "Error: Exception encountered: {$e->getMessage()}" );
 
 				/* translators: placeholder is error message from Amazon Pay API */
 				$order->add_order_note( sprintf( __( "Exception encountered in 'CloseBillingAgreement': %s", 'woocommerce-gateway-amazon-payments-advanced' ), $e->getMessage() ) );
@@ -714,12 +694,14 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 			'_shipping_country',
 		);
 
+		$renewal_order_id = wc_apa_get_order_prop( $renewal_order, 'id' );
+
 		foreach ( $meta_keys_to_copy as $meta_key ) {
-			$meta_value = $renewal_order->get_meta( $meta_key, true, 'edit' );
+			$meta_value = get_post_meta( $renewal_order_id, $meta_key, true );
 
 			if ( $meta_value ) {
-				$subscription->update_meta_data( $meta_key, $meta_value );
-				$subscription->save();
+				$subscription_id = wc_apa_get_order_prop( $subscription, 'id' );
+				update_post_meta( $subscription_id, $meta_key, $meta_value );
 			}
 		}
 	}
@@ -736,13 +718,13 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 	public function admin_actions_panel( $ret, $order, $actions ) {
 		$order_id = $order->get_id();
 
-		$amazon_billing_agreement_id = $order->get_meta( 'amazon_billing_agreement_id', true, 'edit' );
+		$amazon_billing_agreement_id = get_post_meta( $order_id, 'amazon_billing_agreement_id', true );
 		if ( empty( $amazon_billing_agreement_id ) ) {
 			return $ret;
 		}
 
-		$amazon_authorization_id = $order->get_meta( 'amazon_authorization_id', true, 'edit' );
-		$amazon_capture_id       = $order->get_meta( 'amazon_capture_id', true, 'edit' );
+		$amazon_authorization_id = get_post_meta( $order_id, 'amazon_authorization_id', true );
+		$amazon_capture_id       = get_post_meta( $order_id, 'amazon_capture_id', true );
 
 		if ( ! empty( $amazon_authorization_id ) || ! empty( $amazon_capture_id ) ) {
 			return $ret;
@@ -792,9 +774,8 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 	 */
 	public function admin_action_authorize_recurring( $order, $amazon_billing_agreement_id ) {
 		$order_id = $order->get_id();
-		$order->delete_meta_data( 'amazon_authorization_id' );
-		$order->delete_meta_data( 'amazon_capture_id' );
-		$order->save();
+		delete_post_meta( $order_id, 'amazon_authorization_id' );
+		delete_post_meta( $order_id, 'amazon_capture_id' );
 
 		// $amazon_billing_agreement_id is billing agreement.
 		wc_apa()->log( 'Info: Trying to authorize payment in billing agreement ' . $amazon_billing_agreement_id );
@@ -810,9 +791,8 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 	 */
 	public function admin_action_authorize_capture_recurring( $order, $amazon_billing_agreement_id ) {
 		$order_id = $order->get_id();
-		$order->delete_meta_data( 'amazon_authorization_id' );
-		$order->delete_meta_data( 'amazon_capture_id' );
-		$order->save();
+		delete_post_meta( $order_id, 'amazon_authorization_id' );
+		delete_post_meta( $order_id, 'amazon_capture_id' );
 
 		// $amazon_billing_agreement_id is billing agreement.
 		wc_apa()->log( 'Info: Trying to authorize and capture payment in billing agreement ' . $amazon_billing_agreement_id );
@@ -829,12 +809,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 	 * @return string|bool Returns false if failed
 	 */
 	public function get_billing_agreement_state( $order_id, $amazon_billing_agreement_id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return false;
-		}
-
-		$state = $order->get_meta( 'amazon_billing_agreement_state', true, 'edit' );
+		$state = get_post_meta( $order_id, 'amazon_billing_agreement_state', true );
 		if ( $state ) {
 			return $state;
 		}
@@ -849,8 +824,7 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 		$state = (string) $response->GetBillingAgreementDetailsResult->BillingAgreementDetails->BillingAgreementStatus->State; // phpcs:ignore WordPress.NamingConventions
 		// @codingStandardsIgnoreEnd
 
-		$order->update_meta_data( 'amazon_billing_agreement_state', $state );
-		$order->save();
+		update_post_meta( $order_id, 'amazon_billing_agreement_state', $state );
 
 		return $state;
 	}
@@ -861,12 +835,6 @@ class WC_Gateway_Amazon_Payments_Advanced_Subscriptions_Legacy {
 	 * @param int $order_id Order ID.
 	 */
 	public function clear_stored_billing_agreement_state( $order_id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! ( $order instanceof \WC_Order ) ) {
-			return;
-		}
-
-		$order->delete_meta_data( 'amazon_billing_agreement_state' );
-		$order->save();
+		delete_post_meta( $order_id, 'amazon_billing_agreement_state' );
 	}
 }

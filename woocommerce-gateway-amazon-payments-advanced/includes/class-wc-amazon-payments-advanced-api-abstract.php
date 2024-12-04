@@ -11,6 +11,13 @@
 abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 
 	/**
+	 * Merchant identifier of the Solution Provider (SP).
+	 *
+	 * @see https://developer.amazon.com/docs/amazon-pay-api-v2/checkout-session.html#ERL9CA7OsPD
+	 */
+	const AMAZON_PAY_FOR_WOOCOMMERCE_SP_ID = 'A1BVJDFFHQ7US4';
+
+	/**
 	 * Login App setup - Client ID Retrieval Instruction URLs
 	 *
 	 * @var array
@@ -114,6 +121,7 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 		$default  = array(
 			'enabled'                         => 'yes',
 			'title'                           => __( 'Amazon Pay', 'woocommerce-gateway-amazon-payments-advanced' ),
+			'description'                     => __( 'Complete your payment using Amazon Pay!', 'woocommerce-gateway-amazon-payments-advanced' ),
 			'merchant_id'                     => '',
 			'store_id'                        => '',
 			'public_key_id'                   => '',
@@ -132,11 +140,13 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 			'button_size'                     => 'small',
 			'button_color'                    => 'Gold',
 			'button_language'                 => '',
-			'hide_standard_checkout_button'   => 'no',
 			'debug'                           => 'no',
 			'hide_button_mode'                => 'no',
 			'amazon_keys_setup_and_validated' => '0',
 			'subscriptions_enabled'           => 'yes',
+			'mini_cart_button'                => 'no',
+			'product_button'                  => 'no',
+			'alexa_notifications_support'     => 'no',
 		);
 
 		$settings = apply_filters( 'woocommerce_amazon_pa_settings', array_merge( $default, $settings ) );
@@ -206,8 +216,8 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 	 */
 	public static function is_region_supports_shop_currency() {
 		$region = self::get_region();
-		// Avoid interferences of external multi-currency plugins.
-		$currency = get_option( 'woocommerce_currency' );
+		// Take into consideration external multi-currency plugins when not supported multicurrency region.
+		$currency = apply_filters( 'woocommerce_amazon_pa_active_currency', get_option( 'woocommerce_currency' ) );
 
 		switch ( $region ) {
 			case 'eu':
@@ -413,21 +423,13 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 		// @codingStandardsIgnoreStart
 		if ( ! empty( $address->CountryCode ) && in_array( $address->CountryCode, array( 'AT', 'DE' ) ) ) {
 
-			if ( ! empty( $address->AddressLine3 ) && ! empty( $address->AddressLine2 ) && ! empty( $address->AddressLine1 ) ) {
-
-				$formatted['company']   = trim( (string) $address->AddressLine1 . ' ' . (string) $address->AddressLine2 );
-				$formatted['address_1'] = (string) $address->AddressLine3;
-
-			} elseif ( ! empty( $address->AddressLine2 ) && ! empty( $address->AddressLine1 ) ) {
-
-				$formatted['company']   = (string) $address->AddressLine1;
-				$formatted['address_1'] = (string) $address->AddressLine2;
-
-			} elseif ( ! empty( $address->AddressLine1 ) ) {
-
-				$formatted['address_1'] = (string) $address->AddressLine1;
-
-			}
+			$address_parts = array_filter( array(
+				(string) $address->AddressLine1,
+				(string) $address->AddressLine2,
+				(string) $address->AddressLine3)
+			);
+			$formatted['address_1'] = array_pop( $address_parts );
+			$formatted['company'] = implode( ' ', $address_parts );
 
 		} elseif ( ! empty( $address->CountryCode ) && in_array( $address->CountryCode, array( 'JP' ) ) ) {
 
@@ -520,6 +522,25 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 	}
 
 	/**
+	 * Format the charge amount, make sure that decimals with JPY is 0.
+	 *
+	 * @param array $charge_amount The charge amount.
+	 */
+	public static function format_charge_amount( $charge_amount ) {
+
+		if ( empty( $charge_amount['currencyCode'] ) || empty( $charge_amount['amount'] ) ) {
+			return $charge_amount;
+		}
+
+		switch ( $charge_amount['currencyCode'] ) {
+			case 'JPY':
+				$charge_amount['amount'] = WC_Amazon_Payments_Advanced::format_amount( $charge_amount['amount'], 0 );
+		}
+
+		return $charge_amount;
+	}
+
+	/**
 	 * Validate API Keys signature
 	 *
 	 * @return bool
@@ -528,4 +549,18 @@ abstract class WC_Amazon_Payments_Advanced_API_Abstract {
 		return false;
 	}
 
+	/**
+	 * Returns extra headers to be added to requests against Amazon Pay API.
+	 *
+	 * @return array
+	 */
+	protected static function get_amazon_pay_platform_headers() {
+		$version_suffix = wc_apa()->get_gateway() instanceof WC_Gateway_Amazon_Payments_Advanced_Legacy ? '-legacy' : '';
+
+		return array(
+			'x-amz-pay-platform-version'   => WC()->version,
+			'x-amz-pay-integrator-version' => wc_apa()->version . $version_suffix,
+			'x-amz-pay-integrator-id'      => static::AMAZON_PAY_FOR_WOOCOMMERCE_SP_ID,
+		);
+	}
 }

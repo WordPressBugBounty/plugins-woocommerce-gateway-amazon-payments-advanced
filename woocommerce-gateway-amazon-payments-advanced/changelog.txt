@@ -1,5 +1,104 @@
 *** Amazon Pay Changelog ***
 
+= 2.5.3 - 2024-09-24 =
+
+* Fix - Add onboarding text and link
+* Fix - Update the plugin Author on wp.org
+* Fix - Set Merchant account details selector as toggle
+* Fix - Adjust the feedback prompt trigger moment
+* Fix - Adjust the plugin description on the WC settings page
+* Fix - Check the configuration link removed from actual page
+* Dev - Bumped tested up to WordPress v6.6.2.
+* Dev - Bumped tested up to WooCommerce v9.3.2.
+
+= 2.5.2 - 2024-07-25 =
+
+* Fix - Error when using a non Standard decimal amount for a currency.
+* Fix - chargeAmount.Amount is invalid when changing currency after selecting other shipping address.
+* Fix - Hide the -OR- on Minicart when selecting "Enable hide button mode".
+* Fix - Change Payment Method for a Subscription Paid with another Payment Method.
+* Fix - Express Checkout on Product page not getting the values of the variations created by WooCommerce Product Add-Ons and Gravity Forms Product Add-ons
+
+= 2.5.1 - 2023-10-30 =
+
+* Add - New Amazon Pay Platform related Headers.
+* Add - Extendable Multi-currency compatibility.
+
+= 2.5.0 - 2023-07-20 =
+
+* Add - Plugin review Prompt.
+* Fix - Amazon Pay button is displayed on Product pages even when product is Out Of Stock.
+* Fix - WooCommerce Blocks compatibility.
+* Fix - Limit gateway's frontend settings for blocks
+* Update - PHP 8 compatibility fixes.
+* Update - Update WP and WC tested up to.
+
+= 2.4.1 - 2023-02-15 =
+
+* Fix - Identify if the provided order id refers to an actual order completed through Amazon Pay.
+
+= 2.4.0 - 2023-01-26 =
+
+* Update - Bumped required WordPress and WooCommerce versions.
+* Fix - Address street missing in billing address (Germany addresses).
+* Fix - Activate alexa delivery notifications request format.
+* Fix - Allowed currencies population is not taking into account status of compatible multi currency plugin.
+* Fix - Cancelled authorizations should mark order as "Pending payment".
+* Fix - Compatibility with WooCommerce HPOS (custom order tables).
+* Fix - Fatal error when merchant was not migrated to V2 keys.
+
+= 2.3.0 - 2022-10-11 =
+
+* Add - Adds estimatedOrderAmount attribute to Amazon Pay button.
+* Add - Adds support for Amazon Pay on Cart and Checkout Blocks of WooCommerce Blocks.
+* Add - Adds the estimated order amount in every place available by the plugin.
+* Fix - If the currency changes while in the FrontEnd the Gateway will alter its availability based on its settings.
+* Fix - Warning shouldn't appear on Single product regarding the 'subscriptions_enabled' not being set.
+
+= 2.2.4 - 2022-08-12 =
+
+* Fix - Infinite Loop causing Memory Exhaustion.
+
+= 2.2.3 - 2022-08-12 =
+
+* Fix - Pick the proper currency when it gets changed by and external multi-currency plugins.
+* Fix - Addressed possible fatal errors on widgets page and order pay endpoint.
+* Fix - Addressed possible fatal errors when Amazon credentials partially provided.
+
+= 2.2.2 - 2022-06-17 =
+
+* Fix - Require phone number only when purchasing physical products.
+
+= 2.2.1 - 2022-06-13 =
+
+* Fix - Addresses incorrect gateway availability logic.
+
+= 2.2.0 - 2022-05-30 =
+
+* Add - Make Amazon Pay available as a traditional gateway option.
+* Add - Support Alexa Delivery notifications.
+* Add - Support Amazon Pay "Classic" on the checkout block of WooCommerce blocks.
+* Fix - Render Amazon Pay buttons even if they are not visible.
+* Fix - Prevents a JavaScript fatal when rendering Amazon Pay button.
+* Fix - Make Amazon Pay available for supported currencies only.
+* Dev - Bumped tested up to WordPress v6.0.
+
+= 2.1.3 - 2022-04-11 =
+* Fix - Amazon Pay shouldn't be available when not supported currency selected.
+* Dev - Bumped tested up to WordPress 5.9.
+
+= 2.1.2 - 2022-03-17 =
+* Fix - Payment fails when site name is longer than 50 characters.
+* Fix - Payment fails when recurring payment frequency is passed as an integer.
+* Fix - Order changes status to 'Failed' during payment processing.
+* Fix - Error opening subscriptions details due to internal errors.
+* Fix - Multiple pay buttons showing on shipping method change (thank you gyopiazza).
+* Fix - Additional way of identifying order id on return.
+
+= 2.1.1 - 2022-02-03 =
+* Fix - Honoring WooCommerce's setting for decimals when formatting numbers.
+* Fix - Formatting numbers won't separate thousands by ','.
+
 = 2.1.0 - 2022-01-10 =
 * Update - Disable option "Hide standard checkout button on cart page" when other payment gateway are activated.
 * Fix - Enable subscription amount change support.

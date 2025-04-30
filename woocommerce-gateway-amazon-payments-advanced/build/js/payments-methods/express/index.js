@@ -2487,7 +2487,7 @@ const activateChange = (button_id, action) => {
 
 
 /**
- * Returns a react component and also sets an observer for the onCheckoutAfterProcessingWithSuccess event.
+ * Returns a react component and also sets an observer for the onCheckoutSuccess event.
  * @param {object} props
  * @returns React component
  */

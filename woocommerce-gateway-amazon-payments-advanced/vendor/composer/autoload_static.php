@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8b7ebbbf15035660f637a60376b34714
+class ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f
 {
     public static $files = array (
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
@@ -41,9 +41,11 @@ class ComposerStaticInit8b7ebbbf15035660f637a60376b34714
     );
 
     public static $classMap = array (
+        'Amazon\\Pay\\API\\AccountManagementClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/AccountManagementClientInterface.php',
         'Amazon\\Pay\\API\\Client' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Client.php',
         'Amazon\\Pay\\API\\ClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ClientInterface.php',
         'Amazon\\Pay\\API\\HttpCurl' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/HttpCurl.php',
+        'Amazon\\Pay\\API\\MerchantOnboardingClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/MerchantOnboardingClientInterface.php',
         'Amazon\\Pay\\API\\ReportingClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ReportingClientInterface.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'ParagonIE\\ConstantTime\\Base32' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32.php',
@@ -218,8 +220,10 @@ class ComposerStaticInit8b7ebbbf15035660f637a60376b34714
         'phpseclib3\\Exception\\FileNotFoundException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/FileNotFoundException.php',
         'phpseclib3\\Exception\\InconsistentSetupException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/InconsistentSetupException.php',
         'phpseclib3\\Exception\\InsufficientSetupException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/InsufficientSetupException.php',
+        'phpseclib3\\Exception\\InvalidPacketLengthException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/InvalidPacketLengthException.php',
         'phpseclib3\\Exception\\NoKeyLoadedException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/NoKeyLoadedException.php',
         'phpseclib3\\Exception\\NoSupportedAlgorithmsException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/NoSupportedAlgorithmsException.php',
+        'phpseclib3\\Exception\\TimeoutException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/TimeoutException.php',
         'phpseclib3\\Exception\\UnableToConnectException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/UnableToConnectException.php',
         'phpseclib3\\Exception\\UnsupportedAlgorithmException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/UnsupportedAlgorithmException.php',
         'phpseclib3\\Exception\\UnsupportedCurveException' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/Exception/UnsupportedCurveException.php',
@@ -395,9 +399,9 @@ class ComposerStaticInit8b7ebbbf15035660f637a60376b34714
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8b7ebbbf15035660f637a60376b34714::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8b7ebbbf15035660f637a60376b34714::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit8b7ebbbf15035660f637a60376b34714::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$classMap;
 
         }, null, ClassLoader::class);
     }

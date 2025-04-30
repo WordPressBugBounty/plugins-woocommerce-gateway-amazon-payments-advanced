@@ -9,12 +9,15 @@
     require_once 'ReportingClientInterface.php';
     require_once 'HttpCurl.php';
  
-    class Client implements ClientInterface, ReportingClientInterface
+    class Client implements ClientInterface, ReportingClientInterface, MerchantOnboardingClientInterface, AccountManagementClientInterface
     {
-        const SDK_VERSION = '2.6.2';
+        const SDK_VERSION = '2.6.7';
         const SDK_LANGUAGE = 'PHP';
         const HASH_ALGORITHM = 'sha256';
         const API_VERSION = 'v2';
+        const ACCOUNT_MANAGEMENT = '/merchantAccounts';
+        const CLAIM = '/claim';
+        const DISBURSEMENTS = '/disbursements';
         
         private $config = array();
 
@@ -321,7 +324,34 @@
         {
             return 'amazon-pay-api-sdk-php/' . self::SDK_VERSION . ' ('
                 . 'PHP/' . phpversion() . '; '
-                . php_uname('s') . '/' . php_uname('m') . '/' . php_uname('r') . ')';
+                . self::getPhpUname('s') . '/' . self::getPhpUname('m') . '/' . self::getPhpUname('r') . ')';
+        }
+
+        /**
+         * Retrieves system information using the php_uname function if it's enabled
+         * 
+         * @param mode - A mode specifying the information to retrieve (e.g., 's' for the System name)
+         * @return string - System information or '(disabled)' if php_uname is disabled
+         */
+        public function getPhpUname($mode) {
+            $uname_disabled = self::_isDisabled(ini_get('disable_functions'), 'php_uname');
+            return $uname_disabled ? '(disabled)' : php_uname($mode);
+        }
+
+        /**
+         * Checks if a given function is disabled based on a comma-seperated string of disabled functions.
+         * 
+         * @param string $disableFunctionsOutput - String value of the 'disable_function' setting, as output by ini_get('disable_functions')
+         * @param string $functionName - Name of the function we are interesting in seeing whether or not it is disabled
+         * 
+         * @return bool - True if the function is disabled, false otherwise
+         */
+        private static function _isDisabled($disableFunctionsOutput, $functionName) {
+            $disabledFunctions = explode(',', $disableFunctionsOutput);
+            if(in_array($functionName, $disabledFunctions)) {
+                return true;
+            }
+            return false;
         }
 
         public function getPostSignedHeaders($http_request_method, $request_uri, $request_parameters, $request_payload, $other_presigned_headers = null)
@@ -713,5 +743,50 @@
             return $this->apiCall('DELETE', self::API_VERSION . '/report-schedules/' . $reportScheduleId, null, $headers);
         }
 
+        public function getDisbursements($queryParameters, $headers = null)
+        {
+            return $this->apiCall('GET', self::API_VERSION . self::DISBURSEMENTS, null, $headers, $queryParameters);
+        }
 
+        /*
+        * FinalizeCheckoutSession API which enables Pay to validate payment critical attributes and also update book-keeping attributes present in merchantMetadata 
+        */
+        public function finalizeCheckoutSession($checkoutSessionId, $payload, $headers = null)
+        {
+            return $this->apicall('POST', self::API_VERSION . '/checkoutSessions/' . $checkoutSessionId . '/finalize', $payload , $headers);
+        }
+
+        // ----------------------------------- Merchant Onboarding & Account Management APIs -----------------------------------
+
+        public function registerAmazonPayAccount($payload, $headers = null)
+        {
+            return $this->apiCall('POST', self::API_VERSION . self::ACCOUNT_MANAGEMENT, $payload, $headers);
+        }
+
+        public function updateAmazonPayAccount($merchantAccountId, $payload, $headers = null)
+        {
+            return $this->apiCall('PATCH', self::API_VERSION . self::ACCOUNT_MANAGEMENT . '/' . $merchantAccountId, $payload, $headers);
+        }
+
+        public function deleteAmazonPayAccount($merchantAccountId, $headers = null)
+        {
+            return $this->apiCall('DELETE', self::API_VERSION . self::ACCOUNT_MANAGEMENT . '/' . $merchantAccountId, null, $headers);
+        }
+
+        // ----------------------------------- Account Management APIs -----------------------------------
+
+        public function createMerchantAccount($payload, $headers)
+        {
+            return $this->apiCall('POST', self::API_VERSION . self::ACCOUNT_MANAGEMENT, $payload, $headers);
+        }
+
+        public function updateMerchantAccount($merchantAccountId, $payload, $headers)
+        {
+            return $this->apiCall('PATCH', self::API_VERSION . self::ACCOUNT_MANAGEMENT . '/' . $merchantAccountId, $payload, $headers);
+        }
+
+        public function claimMerchantAccount($merchantAccountId, $payload, $headers = null)
+        {
+            return $this->apiCall('POST', self::API_VERSION . self::ACCOUNT_MANAGEMENT . '/' . $merchantAccountId . self::CLAIM, $payload, $headers);
+        }
     }

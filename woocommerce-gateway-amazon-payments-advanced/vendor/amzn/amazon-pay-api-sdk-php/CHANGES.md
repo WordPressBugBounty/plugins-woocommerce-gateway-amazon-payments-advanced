@@ -1,3 +1,21 @@
+### Version 2.6.7 - September 2024
+* Introducing the getDisbursements API.
+* The `getDisbursements` API enables you to retrieve disbursement details based on a specified date range for settlement dates.
+
+### Version 2.6.6 - July 2024
+* Introducing new Account Management APIs that allow partners to programmatically onboard merchants onto the Amazon Pay.
+
+### Version 2.6.5 - March 2024
+* Avoid calling the php_uname function if it's disabled in the php.ini configuration
+
+### Version 2.6.4 - September 2023
+* Introducing new Merchant Onboarding & Account Management APIs, which allows our partners to onboard merchants programatically and as part of account management offer them creation, updation and deletion/dissociation capability.
+* Added the Sample Code snippets for the Charge APIs, Charge Permission APIs and Refund APIs.
+
+### Version 2.6.3 - September 2023
+* Introducing new API called finalizeCheckoutSession which validates critical attributes in merchantMetadata then processes payment. Use this API to process payments for JavaScript-based integrations. 
+*  Corrected README.md file related to finalizeCheckoutSession API.
+
 ### Version 2.6.2 - June 2023
 * Added optional headers to APIs. These are intended to be used by solution providers to send their platform/plugin id’s and versions.
 * Corrected README.md file related to Reporting APIs.

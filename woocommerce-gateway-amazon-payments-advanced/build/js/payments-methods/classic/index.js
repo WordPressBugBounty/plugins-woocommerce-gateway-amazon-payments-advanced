@@ -1930,7 +1930,7 @@ const activateChange = (button_id, action) => {
 
 
 /**
- * Returns a react component and also sets an observer for the onCheckoutAfterProcessingWithSuccess event.
+ * Returns a react component and also sets an observer for the onCheckoutSuccess event.
  * @param {object} props
  * @returns React component
  */
@@ -1939,7 +1939,7 @@ const AmazonPayBtn = props => {
     action
   } = settings;
   (0,external_wp_element_namespaceObject.useEffect)(() => {
-    const unsubscribe = props.eventRegistration.onCheckoutAfterProcessingWithSuccess(async _ref => {
+    const unsubscribe = props.eventRegistration.onCheckoutSuccess(async _ref => {
       let {
         processingResponse
       } = _ref;
@@ -1948,14 +1948,14 @@ const AmazonPayBtn = props => {
       return true;
     });
     return () => unsubscribe();
-  }, [props.eventRegistration.onCheckoutAfterProcessingWithSuccess, props.emitResponse.noticeContexts.PAYMENTS, props.emitResponse.responseTypes.ERROR, props.emitResponse.responseTypes.SUCCESS]);
+  }, [props.eventRegistration.onCheckoutSuccess, props.emitResponse.noticeContexts.PAYMENTS, props.emitResponse.responseTypes.ERROR, props.emitResponse.responseTypes.SUCCESS]);
   (0,external_wp_element_namespaceObject.useEffect)(() => {
-    const unsubscribe = props.eventRegistration.onPaymentProcessing(async () => {
+    const unsubscribe = props.eventRegistration.onPaymentSetup(async () => {
       if ('PayOnly' === action) {
         return true;
       }
       const shippingPhone = document.getElementById('shipping-phone');
-      const billingPhone = document.getElementById('phone');
+      const billingPhone = document.getElementById('billing-phone');
       if (!(shippingPhone !== null && shippingPhone !== void 0 && shippingPhone.value) && !(billingPhone !== null && billingPhone !== void 0 && billingPhone.value)) {
         return {
           type: 'error',
@@ -1965,7 +1965,7 @@ const AmazonPayBtn = props => {
       return true;
     });
     return () => unsubscribe();
-  }, [props.eventRegistration.onPaymentProcessing, props.emitResponse.noticeContexts.PAYMENTS, props.emitResponse.responseTypes.ERROR, props.emitResponse.responseTypes.SUCCESS, action]);
+  }, [props.eventRegistration.onPaymentSetup, props.emitResponse.noticeContexts.PAYMENTS, props.emitResponse.responseTypes.ERROR, props.emitResponse.responseTypes.SUCCESS, action]);
   return (0,external_wp_element_namespaceObject.createElement)("div", {
     id: "classic_pay_with_amazon"
   });

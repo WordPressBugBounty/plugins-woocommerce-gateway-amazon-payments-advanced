@@ -6,9 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Amazon\\Pay\\API\\AccountManagementClientInterface' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/AccountManagementClientInterface.php',
     'Amazon\\Pay\\API\\Client' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Client.php',
     'Amazon\\Pay\\API\\ClientInterface' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ClientInterface.php',
     'Amazon\\Pay\\API\\HttpCurl' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/HttpCurl.php',
+    'Amazon\\Pay\\API\\MerchantOnboardingClientInterface' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/MerchantOnboardingClientInterface.php',
     'Amazon\\Pay\\API\\ReportingClientInterface' => $vendorDir . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ReportingClientInterface.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'ParagonIE\\ConstantTime\\Base32' => $vendorDir . '/paragonie/constant_time_encoding/src/Base32.php',
@@ -183,8 +185,10 @@ return array(
     'phpseclib3\\Exception\\FileNotFoundException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/FileNotFoundException.php',
     'phpseclib3\\Exception\\InconsistentSetupException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/InconsistentSetupException.php',
     'phpseclib3\\Exception\\InsufficientSetupException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/InsufficientSetupException.php',
+    'phpseclib3\\Exception\\InvalidPacketLengthException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/InvalidPacketLengthException.php',
     'phpseclib3\\Exception\\NoKeyLoadedException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/NoKeyLoadedException.php',
     'phpseclib3\\Exception\\NoSupportedAlgorithmsException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/NoSupportedAlgorithmsException.php',
+    'phpseclib3\\Exception\\TimeoutException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/TimeoutException.php',
     'phpseclib3\\Exception\\UnableToConnectException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/UnableToConnectException.php',
     'phpseclib3\\Exception\\UnsupportedAlgorithmException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/UnsupportedAlgorithmException.php',
     'phpseclib3\\Exception\\UnsupportedCurveException' => $vendorDir . '/phpseclib/phpseclib/phpseclib/Exception/UnsupportedCurveException.php',

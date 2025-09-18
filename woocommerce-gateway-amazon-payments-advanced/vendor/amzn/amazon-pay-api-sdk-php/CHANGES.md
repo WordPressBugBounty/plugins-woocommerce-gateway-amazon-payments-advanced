@@ -1,3 +1,19 @@
+### Version 2.7.0 - May 2025
+* Introducing `GetDispute` API which is used to retrieve details of a chargeback dispute associated with a specific order
+* Introducing retry logic for HTTP Code 425
+* Renamed `PaymentServiceProviderClientInterface` to `DisputeClientInterface` to align with current Amazon Pay support for both PSP (Payment Service Provider) and 1PP (Standard) merchants in the Disputes and Files APIs.
+* **Note:** If you are directly using `PaymentServiceProviderClientInterface`, please update your implementation to use `DisputeClientInterface`. The previous interface has been removed as of this release.
+
+### Version 2.6.8 - February 2025
+* Introducing new v2 Dispute APIs for PSPs (Payment Service Provider). Buyers can create a dispute by filing an Amazon Pay A-to-z Guarantee claim or by filing a chargeback with their bank.
+* The `createDispute` API is used to notify Amazon of a newly created chargeback dispute by a buyer on a transaction processed by the PSP (Payment Service Provider), ensuring the dispute is properly accounted for in the Amazon Pay systems.
+* The `updateDispute` API is used to notify Amazon of the closure status of a chargeback dispute initiated by a buyer for orders processed by a partner PSP (Payment Service Provider), ensuring proper accounting within the Amazon systems.
+* The `contestDispute` API is used by the partner, on behalf of the merchant, to formally contest a dispute managed by Amazon, requiring the submission of necessary evidence files within the specified Dispute Window (11 days for Chargeback, 7 days for A-Z Claims).
+* The `uploadFile` API is utilised by PSPs (Payment Service Provider) to upload file-based evidence when a merchant contests a dispute, providing the necessary reference ID to the evidence file as part of the Update Dispute API process.
+* Introducing the `updateCharge` API which enables you to update the charge status of any PSP (Payment Service Provider) processed payment method (PPM) transactions.
+* Upgraded phpseclib/phpseclib & phpunit version to meet security requirements
+* Removed utf8_encode as it depreacted, instead used mb_convert_encoding method for encoding
+
 ### Version 2.6.7 - September 2024
 * Introducing the getDisbursements API.
 * The `getDisbursements` API enables you to retrieve disbursement details based on a specified date range for settlement dates.
@@ -92,7 +108,7 @@
 
   Billing address is a top-level node now instead of being in PaymentPreference
 * There are also non-subtle workflow changes between v1/ and v2/ as the completeCheckoutSession API call will be required now
-  before funds can be captured.  See the [API Release notes](http://amazonpaycheckoutintegrationguide.s3.amazonaws.com/amazon-pay-checkout/release-notes.html) for more details.
+  before funds can be captured.  See the [API Release notes](https://developer.amazon.com/docs/amazon-pay-checkout/release-notes.html) for more details.
 
 #### Version 1.0.0 - April 2020
 

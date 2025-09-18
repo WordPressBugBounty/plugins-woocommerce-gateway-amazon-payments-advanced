@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f
+class ComposerStaticInitc3425b3f410b88f017593142db4782ee
 {
     public static $files = array (
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
@@ -44,6 +44,12 @@ class ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f
         'Amazon\\Pay\\API\\AccountManagementClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/AccountManagementClientInterface.php',
         'Amazon\\Pay\\API\\Client' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Client.php',
         'Amazon\\Pay\\API\\ClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ClientInterface.php',
+        'Amazon\\Pay\\API\\Constants\\DisputeFilingReason' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Constants/DisputeFilingReason.php',
+        'Amazon\\Pay\\API\\Constants\\DisputeReasonCode' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Constants/DisputeReasonCode.php',
+        'Amazon\\Pay\\API\\Constants\\DisputeResolution' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Constants/DisputeResolution.php',
+        'Amazon\\Pay\\API\\Constants\\DisputeState' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Constants/DisputeState.php',
+        'Amazon\\Pay\\API\\Constants\\EvidenceType' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/Constants/EvidenceType.php',
+        'Amazon\\Pay\\API\\DisputeClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/DisputeClientInterface.php',
         'Amazon\\Pay\\API\\HttpCurl' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/HttpCurl.php',
         'Amazon\\Pay\\API\\MerchantOnboardingClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/MerchantOnboardingClientInterface.php',
         'Amazon\\Pay\\API\\ReportingClientInterface' => __DIR__ . '/..' . '/amzn/amazon-pay-api-sdk-php/Amazon/Pay/API/ReportingClientInterface.php',
@@ -399,9 +405,9 @@ class ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4019e0c1ca24ae306a591a9d133a423f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc3425b3f410b88f017593142db4782ee::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc3425b3f410b88f017593142db4782ee::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc3425b3f410b88f017593142db4782ee::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -3,7 +3,7 @@
         'name' => 'woocommerce/woocommerce-gateway-amazon-payments-advanced',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9f01e6e3aa163e810eae15629041b16315a16840',
+        'reference' => 'a1fe5d9e9d7333506ef453061c7fcc17b0737eac',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'amzn/amazon-pay-api-sdk-php' => array(
-            'pretty_version' => '2.6.7',
-            'version' => '2.6.7.0',
-            'reference' => 'bc4b8460a2a33fb83916ae7a0c6e5e577e95c43c',
+            'pretty_version' => '2.7.0',
+            'version' => '2.7.0.0',
+            'reference' => 'ed3416f5ae7132bdd9007f6f83f36cb541b83793',
             'type' => 'library',
             'install_path' => __DIR__ . '/../amzn/amazon-pay-api-sdk-php',
             'aliases' => array(),
@@ -49,7 +49,7 @@
         'woocommerce/woocommerce-gateway-amazon-payments-advanced' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9f01e6e3aa163e810eae15629041b16315a16840',
+            'reference' => 'a1fe5d9e9d7333506ef453061c7fcc17b0737eac',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

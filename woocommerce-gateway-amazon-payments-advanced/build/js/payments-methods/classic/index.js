@@ -3099,7 +3099,9 @@ const activateChange = (button_id, action) => {
  */
 const AmazonPayBtn = props => {
   const {
-    action
+    action,
+    phoneRequired,
+    phoneRequiredBase
   } = settings;
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     const unsubscribe = props.eventRegistration.onCheckoutSuccess(async _ref => {
@@ -3112,6 +3114,21 @@ const AmazonPayBtn = props => {
     });
     return () => unsubscribe();
   }, [props.eventRegistration.onCheckoutSuccess, props.emitResponse.noticeContexts.PAYMENTS, props.emitResponse.responseTypes.ERROR, props.emitResponse.responseTypes.SUCCESS]);
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    var _window$wc, _window$wc$wcSettings, _window$wc$wcSettings2;
+    if ('PayOnly' === action || !phoneRequired || phoneRequiredBase) {
+      return;
+    }
+    const wcDefaultPhone = (_window$wc = window.wc) === null || _window$wc === void 0 ? void 0 : (_window$wc$wcSettings = _window$wc.wcSettings) === null || _window$wc$wcSettings === void 0 ? void 0 : (_window$wc$wcSettings2 = _window$wc$wcSettings.defaultFields) === null || _window$wc$wcSettings2 === void 0 ? void 0 : _window$wc$wcSettings2.phone;
+    if (wcDefaultPhone) {
+      wcDefaultPhone.required = true;
+    }
+    return () => {
+      if (wcDefaultPhone) {
+        wcDefaultPhone.required = false;
+      }
+    };
+  }, [action]);
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     const unsubscribe = props.eventRegistration.onPaymentSetup(async () => {
       if ('PayOnly' === action) {

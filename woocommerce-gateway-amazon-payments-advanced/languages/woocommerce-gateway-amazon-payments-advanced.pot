@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: Amazon Pay for WooCommerce 2.6.2\n"
+"Project-Id-Version: Amazon Pay for WooCommerce 2.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-gateway-amazon-pay\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-22T15:41:14+00:00\n"
+"POT-Creation-Date: 2026-10-26T10:57:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: woocommerce-gateway-amazon-payments-advanced\n"
@@ -34,7 +34,7 @@ msgstr ""
 #: build/js/payments-methods/express/index.min.js:1
 #. Author of the plugin
 #: woocommerce-gateway-amazon-payments-advanced.php
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:153
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:166
 #: includes/class-wc-amazon-payments-advanced-api-abstract.php:123
 #: includes/class-wc-gateway-amazon-payments-advanced-abstract.php:187
 #: includes/class-wc-gateway-amazon-payments-advanced-abstract.php:394
@@ -132,51 +132,56 @@ msgstr ""
 msgid "Actually, I need help..."
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:204
+#. translators: 1) Action attempted 2) Error message from Amazon
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:130
+msgid "Amazon Pay action \"%1$s\" failed: %2$s"
+msgstr ""
+
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:217
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:139
 msgid "Refresh"
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:216
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:251
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:229
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:264
 msgid "Invalid"
 msgstr ""
 
 #. translators: 1) Charge Permission ID 2) Status.
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:218
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:231
 msgid "Charge Permission %1$s is <strong>%2$s</strong>."
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:226
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:239
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:302
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-subscriptions-legacy.php:761
 msgid "Authorize"
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:231
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:244
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:307
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-subscriptions-legacy.php:766
 msgid "Authorize &amp; Capture"
 msgstr ""
 
 #. translators: 1) Charge ID 2) Status.
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:253
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:266
 msgid "Charge %1$s is <strong>%2$s</strong>."
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:261
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:279
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:274
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:292
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:272
 msgid "Close Authorization"
 msgstr ""
 
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:274
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:287
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:267
 msgid "Capture funds"
 msgstr ""
 
 #. translators: 1) Capture ID 2) Capture Status.
-#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:287
+#: includes/admin/class-wc-amazon-payments-advanced-order-admin.php:300
 #: includes/admin/legacy/class-wc-amazon-payments-advanced-order-admin-legacy.php:194
 msgid "Make a refund?"
 msgstr ""
@@ -282,7 +287,7 @@ msgstr ""
 msgid "Error: You must add the private key file."
 msgstr ""
 
-#: includes/class-wc-amazon-payments-advanced-api.php:458
+#: includes/class-wc-amazon-payments-advanced-api.php:483
 msgid "Error while getting checkout session."
 msgstr ""
 
@@ -901,53 +906,58 @@ msgstr ""
 msgid "Payment method updated."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:302
+#: includes/class-wc-gateway-amazon-payments-advanced.php:310
 msgid "optional"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:400
+#: includes/class-wc-gateway-amazon-payments-advanced.php:408
 msgid "OR"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:527
+#: includes/class-wc-gateway-amazon-payments-advanced.php:510
+msgid "Enter your account password to link your Amazon Pay account, or uncheck the option to continue without linking."
+msgstr ""
+
+#: includes/class-wc-gateway-amazon-payments-advanced.php:543
 msgid "You did not enter the password to validate your account. If you want, you can continue as guest."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:533
+#: includes/class-wc-gateway-amazon-payments-advanced.php:549
 msgid "The password you entered did not match the one on the account. Try again, or continue as guest."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:582
+#: includes/class-wc-gateway-amazon-payments-advanced.php:630
 msgid "An account with your Amazon Pay email address exists already. Is that you? If so, enter your password below."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:680
+#: includes/class-wc-gateway-amazon-payments-advanced.php:745
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:122
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1215
 msgid "Have an Amazon account?"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:697
+#: includes/class-wc-gateway-amazon-payments-advanced.php:771
 #: includes/compats/woo-blocks/class-wc-amazon-payments-advanced-block-compat-express.php:56
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1220
 msgid "You're logged in with your Amazon Account."
 msgstr ""
 
 #: build/js/payments-methods/express/index.min.js:1
-#: includes/class-wc-gateway-amazon-payments-advanced.php:697
+#: includes/class-wc-gateway-amazon-payments-advanced.php:771
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1220
 #: build/js/payments-methods/express/index.js:3728
 #: src/js/payments-methods/express/_checkout-blocks.js:41
 msgid "Log out &raquo;"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:814
+#: includes/class-wc-gateway-amazon-payments-advanced.php:879
+#: includes/class-wc-gateway-amazon-payments-advanced.php:908
 msgid "There was an error after returning from Amazon. Please try again."
 msgstr ""
 
 #: build/js/payments-methods/express/index.min.js:1
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1034
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1143
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1128
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1237
 #: build/js/payments-methods/express/index.js:3618
 #: build/js/payments-methods/express/index.js:3715
 #: src/js/payments-methods/express/_checkout-blocks.js:26
@@ -956,151 +966,165 @@ msgid "Change"
 msgstr ""
 
 #: build/js/payments-methods/express/index.min.js:1
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1036
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1130
 #: build/js/payments-methods/express/index.js:3618
 #: src/js/payments-methods/express/_payment-methods.js:31
 msgid "Select"
 msgstr ""
 
 #: build/js/payments-methods/express/index.min.js:1
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1042
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1136
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1260
 #: build/js/payments-methods/express/index.js:3671
 #: src/js/payments-methods/express/_payment-methods.js:103
 msgid "Payment Method"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1084
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1178
 msgid "Your selected Amazon payment method"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1119
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1213
 msgid "Billing Address"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1145
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1239
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1240
 msgid "Shipping Address"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1211
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1302
 msgid "Link Amazon Pay Account"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1216
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1307
 msgid "By checking this box, every time you will log in with the same Amazon account, you will also be logged in with your existing shop account."
 msgstr ""
 
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1314
+msgid "Enter your account password to confirm the link."
+msgstr ""
+
 #: build/js/payments-methods/classic/index.min.js:1
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1366
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1467
 #: build/js/payments-methods/classic/index.js:3142
 #: src/js/payments-methods/classic/_payment-methods.js:72
 msgid "A phone number is required to complete your checkout through Amazon Pay."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1394
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1495
 #: includes/legacy/class-wc-amazon-payments-advanced-api-legacy.php:842
 #: includes/legacy/class-wc-amazon-payments-advanced-api-legacy.php:1014
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:376
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:437
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:294
 msgid "Invalid order."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1400
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1501
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:298
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-subscriptions-legacy.php:76
 msgid "An Amazon Pay payment method was not chosen."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1474
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1480
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1575
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1581
 msgid "There was an error while processing your payment. Your payment method was not charged. Please try again. If the error persist, please contact us about your order."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1491
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1592
 msgid "Awaiting payment."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1518
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1668
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1619
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1769
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:408
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:967
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-subscriptions-legacy.php:531
 msgid "Error:"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1579
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1587
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1603
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1662
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1677
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1680
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1688
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1704
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1763
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1778
 msgid "There was an error while processing your payment. Please try again. If the error persist, please contact us about your order."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1644
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1752
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1745
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1853
 msgid "Amazon Pay checkout was canceled. Reason(s): %s"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1645
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1753
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1746
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1854
 msgid "Unknown"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1651
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1759
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1752
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1860
 #: includes/legacy/class-wc-gateway-amazon-payments-advanced-legacy.php:1743
 msgid "There was a problem with previously declined transaction. Please try placing the order again."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1654
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1761
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1755
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1862
 msgid "The transaction was canceled by you. Please try placing the order again."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1666
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1767
 msgid "Click the button below to select another payment method"
 msgstr ""
 
 #. translators: 1) Amazon Charge ID 2) Charge status
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1847
+#: includes/class-wc-gateway-amazon-payments-advanced.php:1972
 msgid "Charge %1$s with status %2$s."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1951
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2096
 msgid "Amazon charge status was closed, moving order to failed."
 msgstr ""
 
 #. translators: 1) Amazon Charge ID 2) Charge status
-#: includes/class-wc-gateway-amazon-payments-advanced.php:1976
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2121
 msgid "Charge Permission %1$s with status %2$s."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2085
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2230
 msgid "Confirm payment method"
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2091
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2218
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2236
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2363
 msgid "Your cart changed, and you need to confirm your selected payment method again."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2210
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2214
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2355
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2359
 msgid "Something went wrong with your session. Please log in again."
 msgstr ""
 
 #. translators: 1) Language 2) Region
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2251
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2396
 msgid "%1$s is not a valid language for the %2$s region."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2826
+#. translators: 1) Amazon Charge ID 2) Charge status on Amazon
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2804
+msgid "Authorization %1$s was already %2$s on Amazon."
+msgstr ""
+
+#. translators: 1) Amazon Charge ID 2) Charge status on Amazon
+#: includes/class-wc-gateway-amazon-payments-advanced.php:2850
+msgid "Charge %1$s was already %2$s on Amazon."
+msgstr ""
+
+#: includes/class-wc-gateway-amazon-payments-advanced.php:3031
 msgid "Please read and accept the terms and conditions to proceed with your order."
 msgstr ""
 
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2836
-#: includes/class-wc-gateway-amazon-payments-advanced.php:2843
+#: includes/class-wc-gateway-amazon-payments-advanced.php:3041
+#: includes/class-wc-gateway-amazon-payments-advanced.php:3048
 msgid "Invalid payment method."
 msgstr ""
 
@@ -1203,7 +1227,7 @@ msgstr ""
 #. translators: 1) Reason.
 #. translators: placeholder is error message from Amazon Pay API
 #: includes/legacy/class-wc-amazon-payments-advanced-api-legacy.php:1098
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:391
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:452
 msgid "Error: Unable to authorize funds with Amazon. Reason: %s"
 msgstr ""
 
@@ -1277,26 +1301,26 @@ msgid "Refunded %1$s (%2$s)"
 msgstr ""
 
 #. translators: 1) Amazon order reference ID 2) order reference status
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:146
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:147
 msgid "Received IPN for order reference %1$s with status %2$s."
 msgstr ""
 
 #. translators: 1) Amazon authorize ID 2) authorization status
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:172
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:173
 msgid "Received IPN for payment authorize %1$s with status %2$s."
 msgstr ""
 
 #. translators: 1) Amazon capture ID 2) capture status
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:198
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:199
 msgid "Received IPN for payment capture %1$s with status %2$s."
 msgstr ""
 
 #. translators: 1) Amazon refund ID 2) refund status 3) refund amount.
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:228
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:229
 msgid "Received IPN for payment refund %1$s with status %2$s. Refund amount: %3$s."
 msgstr ""
 
-#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:274
+#: includes/legacy/class-wc-amazon-payments-advanced-ipn-handler-legacy.php:275
 msgid "Order cancelled by customer via Amazon."
 msgstr ""
 
